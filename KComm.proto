@@ -1,0 +1,18 @@
+// proto file for the communication between instances of LNContractApp
+
+syntax = "proto3";
+
+// Service definition
+service KComm {
+    // Method to receive Macaroon from counterparty appear
+    rpc Transfer_Macaroon(Inbound_Mac) returns (Mac_Response) {}
+}
+
+// Messages definitions
+message Inbound_Mac {
+    string MacStr =1;
+}
+
+message Mac_Response {
+    string MacResp =1;
+}
