@@ -50,10 +50,13 @@ class Ui_Frame(object):
 
         menu_window=QtWidgets.QMainWindow()
         top_bar = QtWidgets.QMainWindow.menuBar(menu_window)
-        menu =top_bar.addMenu("Choose an Object")
+        menu =top_bar.addMenu("&Choose an Object")
         object1 = menu.addAction("Object1")
         object2 = menu.addAction("Object2")
         object3 = menu.addAction("Object3")
+        
+        sub_menu= menu.addMenu("Submenu")
+        object4 = sub_menu.addAction("Object4")
 
         # top_menu = QMenu(self.parent)
 
@@ -81,6 +84,11 @@ class Ui_Frame(object):
             pass
         elif action == object3:
             print("Object3")
+            pass
+        elif action == object4:
+            cb=clipboard.text()
+            clipboard.clear()
+            print(cb)
             pass
        
 
