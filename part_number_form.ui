@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PartNumberForm</class>
+ <widget class="QWidget" name="PartNumberForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>389</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="pn_entry_form_Widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>371</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="pn_entry_part_number_Label">
+      <property name="text">
+       <string>Part Number</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="pn_entry_part_number_LineEdit"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="pn_entry_description_Label">
+      <property name="text">
+       <string>Description</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="pn_entry_description_LineEdit"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QDialogButtonBox" name="pn_entry_ButtonBox">
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="part_number_status_LineEdit"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="part_number_status_Label">
+      <property name="text">
+       <string>Status</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="pn_entry_form_Label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>361</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Part Number Entry:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="pn_bottem_Label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>210</y>
+     <width>361</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>pn_entry_part_number_LineEdit</tabstop>
+  <tabstop>pn_entry_description_LineEdit</tabstop>
+  <tabstop>part_number_status_LineEdit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
