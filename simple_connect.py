@@ -1,21 +1,17 @@
 import lightning_pb2 as ln
 import lightning_pb2_grpc as lnrpc
 
-import KComm_pb2_grpc
-import KComm_pb2
+import kcomm_pb2_grpc
+import kcomm_pb2
 
 import grpc
 import os
+import subprocess
 import codecs
 
-import KComm_server as kcomm
+import kcomm_server as kcomm
 
-# Start the server
-############ 
-# Somehow we need to start the counterparty's server
-# and then continue on.
-############
-
+# Nd to attriubte bulk of this code to LND site?  
 
 
 # Due to updated ECDSA generated tls.cert we need to let gprc know that
@@ -63,6 +59,9 @@ combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
 
 #127.0.0.1:10004.
 channel = grpc.secure_channel('localhost:10004', combined_creds, options=(('grpc.enable_http_proxy', 0),('grpc.enable_https_proxy', 0)))
+# stub gives the location and port the ln node controlled by the party (Alice) is listening to
+# and gives the authorization credentials--the macaroon.
+# It is the basis of every communication to the LN node.  
 stub = lnrpc.LightningStub(channel)
 
 
@@ -72,64 +71,117 @@ print(response.total_balance)
 
 
 # # Get Info of node.
-# request = ln.GetInfoRequest()
-# response = stub.GetInfo(request)
-# print(response)
+request = ln.GetInfoRequest()
+response = stub.GetInfo(request)
+print(response)
 
-# # List Peers
-# request = ln.ListPeersRequest(
-#     latest_error=True
+##################
+
+# # # List Peers
+# # request = ln.ListPeersRequest(
+# #     latest_error=True
+# # )
+# # response = stub.ListPeers(request)
+# # print(response)
+
+
+
+# # # List Permissions.
+# # request = ln.ListPermissionsRequest()
+# # response = stub.ListPermissions(request)
+# # print(response)
+
+# # Fee Report
+# # request = ln.FeeReportRequest()
+# # response = stub.FeeReport(request)
+# # print(response)
+
+
+# # Prepare Bake Macaroon request
+# permissions = [{"entity":"info", "action":"read"}, {"entity":"offchain", "action":"read"}]
+# key = 0xffffffffffffffff
+# #key = 1
+# external_permissions = False
+# request = ln.BakeMacaroonRequest(
+#     permissions=permissions,
+#     root_key_id=key,
+#     allow_external_permissions=external_permissions
 # )
-# response = stub.ListPeers(request)
+# # The response from the request is a strng hex macaroon
+# response= stub.BakeMacaroon(request)
 # print(response)
 
 
-
-# # List Permissions.
-# request = ln.ListPermissionsRequest()
-# response = stub.ListPermissions(request)
-# print(response)
-
-# Fee Report
-request = ln.FeeReportRequest()
-response = stub.FeeReport(request)
-print(response)
+# # request = ln.ListMacaroonIDsRequest()
+# # response = stub.ListMacaroonIDs(request)
+# # print(response)
 
 
-# Prepare Bake Macaroon request
-permissions = [{"entity":"info", "action":"read"}, {"entity":"offchain", "action":"read"}]
-key = 0xffffffffffffffff
-#key = 1
-external_permissions = False
-request = ln.BakeMacaroonRequest(
-    permissions=permissions,
-    root_key_id=key,
-    allow_external_permissions=external_permissions
-)
-# The response from the request is a strng hex macaroon
-response= stub.BakeMacaroon(request)
-print(response)
+
+# # Connect with the counterparty kcomm server
+# ############ 
+# # Assuming for now that the counterparty's server is started.
+# # We'll need to take care of error handling if server isn't on lone.
+# ############
+
+# def transfer_macaroon(stub, mac_hex_str):
+#     mac_request = kcomm_pb2.Inbound_Mac(MacStr=mac_hex_str)
+#     result = stub.Transfer_Macaroon(mac_request)
+#     print(result.MacResp)
 
 
-# request = ln.ListMacaroonIDsRequest()
-# response = stub.ListMacaroonIDs(request)
-# print(response)
+# port = input("Enter port number of counterparty:  (50051)")
+# with grpc.insecure_channel('localhost:'+port) as channel:
+#     stubk = kcomm_pb2_grpc.KCommStub(channel)
+#     transfer_macaroon(stubk, response.macaroon)
 
-# Connect with the counterparty server
+# # Open Channel to Bob
 
-def transfer_macaroon(stub, mac_hex_str):
-    mac_request = KComm_pb2.Inbound_Mac(MacStr=mac_hex_str)
-    result = stub.Transfer_Macaroon(mac_request)
-    print(result.MacResp)
+# # Will want Bob to send his node_pubkye to Alice
+# # Assume for now that Alice knows Bob's pubkey
+# #  "02647163e26eeedac4b9cba10d821ab06583f95d3fea1be411d2718ddf94578012"
+
+# node_pubkey= "02647163e26eeedac4b9cba10d821ab06583f95d3fea1be411d2718ddf94578012"
+# node_pubkey_bytes= bytes.fromhex(node_pubkey)
+
+# request=ln.OpenChannelRequest(
+#     node_pubkey = node_pubkey_bytes,
+#     local_funding_amount = 20001
+# )
+# response=stub.OpenChannel(request)
 
 
-    
+# Alice's Channels
+# List Channels Request
+request=ln.ListChannelsRequest()
+response=stub.ListChannels(request)
+print("Channels")
+channel_point = response.channels[0].channel_point
+print(channel_point)
+print("channel point type:")
+print(type(channel_point))
 
 
-port = input("Enter port number of counterparty:  (50051)")
-with grpc.insecure_channel('localhost:'+port) as channel:
-    stub = KComm_pb2_grpc.KCommStub(channel)
-    transfer_macaroon(stub, response.macaroon)
+# # # Close channel with Bob
+# # # Assuming Allice has only one channel, which 
+# # # is with Bob.
+
+# # txid=channel_point.split(":", 2)[0]
+# # index=channel_point.split(":",2)[1]
+# # print(txid)
+# # print(index)
+
+# # c_p = ln.ChannelPoint(
+# #     funding_txid_str=txid,
+# #     output_index=int(index)
+# # )
+
+
+# # # Close channel with Bob
+# # request=ln.CloseChannelRequest(
+# #     channel_point = c_p
+# # )
+# # response=stub.CloseChannel(request)
 
 
 print("Finished.")

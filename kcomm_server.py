@@ -1,4 +1,8 @@
-#Server functionality
+# Server functionality.
+# This is the server for contract communications 
+# between the parties, e.g. for sending appropriate
+# macaroon (read) access to a party's ln node, invoices.
+#  
 
 
 from concurrent import futures
@@ -11,10 +15,10 @@ import os
 import grpc
 
 
-import KComm_pb2
-import KComm_pb2_grpc
+import kcomm_pb2
+import kcomm_pb2_grpc
 
-class KCommServicer(KComm_pb2_grpc.KCommServicer):
+class KCommServicer(kcomm_pb2_grpc.KCommServicer):
     def Transfer_Macaroon(self, request, context):
         mac_string = request.MacStr
         print(mac_string)
@@ -35,12 +39,12 @@ class KCommServicer(KComm_pb2_grpc.KCommServicer):
         mac_file_read.close()
 
 
-        return KComm_pb2.Mac_Response(MacResp="Got it!")
+        return kcomm_pb2.Mac_Response(MacResp="Got it!")
 
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    KComm_pb2_grpc.add_KCommServicer_to_server(KCommServicer(), server)
+    kcomm_pb2_grpc.add_KCommServicer_to_server(KCommServicer(), server)
 
     # Get the port for the server
     port = input("Enter the port number: (50051):")

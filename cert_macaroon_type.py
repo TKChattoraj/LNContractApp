@@ -1,14 +1,14 @@
 import lightning_pb2 as ln
 import lightning_pb2_grpc as lnrpc
 
-import KComm_pb2_grpc
-import KComm_pb2
+import kcomm_pb2_grpc
+import kcomm_pb2
 
 import grpc
 import os
 import codecs
 
-import KComm_server as kcomm
+import kcomm_server as kcomm
 
 # Start the server
 ############ 
