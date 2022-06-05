@@ -51,7 +51,7 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="part_number_status_LineEdit"/>
+     <widget class="QLineEdit" name="pn_entry_status_LineEdit"/>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="part_number_status_Label">
@@ -102,7 +102,7 @@
  <tabstops>
   <tabstop>pn_entry_part_number_LineEdit</tabstop>
   <tabstop>pn_entry_description_LineEdit</tabstop>
-  <tabstop>part_number_status_LineEdit</tabstop>
+  <tabstop>pn_entry_status_LineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections/>

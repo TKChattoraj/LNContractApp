@@ -9,11 +9,15 @@ from PyQt6.QtSql import QSqlDatabase, QSqlDatabase, QSqlTableModel, QSqlQuery
 from reconfigured import Ui_MainWindow
 from contract_view import ContractView
 from sale_goods_form import Ui_SaleGoodsForm
-#from part_number_form import Ui_PartNumberForm
+from sale_service_form import Ui_SaleServiceForm
+from part_number_form import Ui_PartNumberForm
+from service_number_form import Ui_ServiceNumberForm
 from db_methods import select_entities, insert_goods_table, select_pn, select_contracts, get_db_id, insert_sale_goods
 
 from sale_goods import SaleGoodsForm
-#from part_number import PartNumberForm
+from sale_service import SaleServiceForm
+from part_number import PartNumberForm
+from service_number import ServiceNumberForm
         
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -28,16 +32,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_view_widget = ContractView(self, self.con)
         # set up the sale of goods form:
         self.sale_goods_form_widget = SaleGoodsForm(self, self.con)
+        # set up the sale of service form:
+        self.sale_service_form_widget = SaleServiceForm(self,self.con)
+        # set up the part number form:
+        self.pn_form_widget = PartNumberForm(self, self.con)
+        # set up the service number form:
+        self.sn_form_widget=ServiceNumberForm(self,self.con)
 
         
         # add various widgets to the middle_layout
         self.middle_layout.addWidget(self.contract_view_widget)
         self.middle_layout.addWidget(self.sale_goods_form_widget)
+        self.middle_layout.addWidget(self.sale_service_form_widget)
+        self.middle_layout.addWidget(self.pn_form_widget)
 
 
         # connect action triggers to slots
         self.actionOpen.triggered.connect(self.open_) 
         self.actionSale_of_Goods.triggered.connect(self.show_sale_of_goods_form)
+        self.actionSale_of_Services.triggered.connect(self.show_sale_of_service_form)
+        self.actionPart_Number.triggered.connect(self.show_part_number_form)
+
 
         # self.horizontalLayoutWidget_2a = QtWidgets.QWidget(self.centralwidget)
         # self.horizontalLayoutWidget_2a.setGeometry(QtCore.QRect(149, 9, 471, 541))
@@ -77,26 +92,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # the the desired view to True and others to False
         self.contract_view_widget.setVisible(True)
         self.sale_goods_form_widget.setVisible(False)
+        self.sale_service_form_widget.setVisible(False)
+        self.pn_form_widget.setVisible(False)
     
-    # def import_(self):
-    #     self.verticalWidget_4.setVisible(False)     
-    #     self.verticalWidget_3.setVisible(True)
-
     def show_sale_of_goods_form (self):
         self.contract_view_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(True)
-        # self.pn_entry_form_widget.setVisible(False)
-        # self.verticalWidget_3.setVisible(False)
+        self.sale_service_form_widget.setVisible(False)
+        self.pn_form_widget.setVisible(False)
 
-    # def show_part_number_form(self):
-    #     self.verticalWidget_4.setVisible(True)
-    #     self.pn_entry_form_widget.setVisible(True)
-    #     self.sale_goods_form_widget.setVisible(False)
-    #     self.verticalWidget_3.setVisible(False)   
+    def show_sale_of_service_form (self):
+        self.contract_view_widget.setVisible(False)
+        self.sale_goods_form_widget.setVisible(False)
+        self.sale_service_form_widget.setVisible(True)
+        self.pn_form_widget.setVisible(False)
+
+    def show_part_number_form(self):
+        self.contract_view_widget.setVisible(False)
+        self.sale_goods_form_widget.setVisible(False)
+        self.sale_service_form_widget.setVisible(False)
+        self.pn_form_widget.setVisible(True)
 
    
 
-     
+# application    
 
 app = QApplication(sys.argv)
 clipboard=app.clipboard()

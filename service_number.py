@@ -1,4 +1,4 @@
-# containing the sub-classed SaleGoodsForm with form specific slots and other handling.
+# containing the sub-classed Service Number Form with form specific slots and other handling.
 
 from PyQt6.QtWidgets import QMainWindow, QWidget
 from PyQt6.QtCore import Qt, QDate, QTimer
@@ -6,10 +6,10 @@ from part_number_form import Ui_PartNumberForm
 from db_methods import insert_goods_table
 
 
-class PartNumberForm(QWidget, Ui_PartNumberForm):
+class ServiceNumberForm(QWidget, Ui_PartNumberForm):
     
     def __init__(self, parent, con):
-        # self is the window.pn_form_widget
+        # self is the window.sn_form_widget
         # parent is instance of MainWindow
         # con is the db connection
 

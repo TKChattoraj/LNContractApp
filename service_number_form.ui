@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>service_number_form</class>
- <widget class="QWidget" name="service_number_form">
+ <class>ServiceNumberForm</class>
+ <widget class="QWidget" name="ServiceNumberForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,7 +24,7 @@
    </property>
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="0">
-     <widget class="QLabel" name="service_entery_name_Label">
+     <widget class="QLabel" name="sn_entery_name_Label">
       <property name="text">
        <string>Name</string>
       </property>
@@ -41,20 +41,20 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="service__entry_pn_entry_part_number_LineEdit"/>
+     <widget class="QLineEdit" name="sn_entry_pn_entry_service_number_LineEdit"/>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="service_entry_description_Label">
+     <widget class="QLabel" name="sn_entry_description_Label">
       <property name="text">
        <string>Description</string>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="service_entry_description_LineEdit"/>
+     <widget class="QLineEdit" name="sn_entry_description_LineEdit"/>
     </item>
     <item row="3" column="1">
-     <widget class="QDialogButtonBox" name="service_entry_buttonBox">
+     <widget class="QDialogButtonBox" name="sn_entry_buttonBox">
       <property name="standardButtons">
        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
       </property>
@@ -62,7 +62,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="service_entry_form_label">
+  <widget class="QLabel" name="sn_entry_form_label">
    <property name="geometry">
     <rect>
      <x>10</x>

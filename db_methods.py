@@ -43,6 +43,13 @@ def select_pn(con):
     query.exec(query_text)
     return query
 
+def select_sn(con):
+    query=QSqlQuery(con)
+    query_text="SELECT id, service_number, description, status FROM services"
+    query.exec(query_text)
+    return query
+
+
 def select_contracts(con):
     query=QSqlQuery(con)
     query_text="SELECT id, contract_no, party_id, counterparty_id, description, status FROM contracts"
@@ -56,6 +63,10 @@ def insert_goods_table(con, data):
 
 def insert_sale_goods(con, data):
     query_text="INSERT INTO sale_goods (contract_id, goods_id, entity_id, quantity, due_date, tender, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    insert_in_table(con, query_text, data)
+
+def insert_sale_service(con, data):
+    query_text="INSERT INTO sale_services (contract_id, service_id, entity_id, quantity, due_date, tender, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     insert_in_table(con, query_text, data)
 
 def insert_in_table(con, query_text, data):

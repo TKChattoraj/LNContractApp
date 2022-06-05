@@ -120,7 +120,7 @@
       <string>Consideration</string>
      </property>
      <addaction name="actionSale_of_Goods"/>
-     <addaction name="actionServices"/>
+     <addaction name="actionSale_of_Services"/>
     </widget>
     <addaction name="actionParty"/>
     <addaction name="actionCounterparty"/>
@@ -147,9 +147,9 @@
     <string>Sale of Goods</string>
    </property>
   </action>
-  <action name="actionServices">
+  <action name="actionSale_of_Services">
    <property name="text">
-    <string>Services</string>
+    <string>Sale of Services</string>
    </property>
   </action>
   <action name="actionPart_Number">

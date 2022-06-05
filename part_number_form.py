@@ -35,9 +35,9 @@ class Ui_PartNumberForm(object):
         self.pn_entry_ButtonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Save)
         self.pn_entry_ButtonBox.setObjectName("pn_entry_ButtonBox")
         self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.FieldRole, self.pn_entry_ButtonBox)
-        self.part_number_status_LineEdit = QtWidgets.QLineEdit(self.pn_entry_form_Widget)
-        self.part_number_status_LineEdit.setObjectName("part_number_status_LineEdit")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.FieldRole, self.part_number_status_LineEdit)
+        self.pn_entry_status_LineEdit = QtWidgets.QLineEdit(self.pn_entry_form_Widget)
+        self.pn_entry_status_LineEdit.setObjectName("pn_entry_status_LineEdit")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.FieldRole, self.pn_entry_status_LineEdit)
         self.part_number_status_Label = QtWidgets.QLabel(self.pn_entry_form_Widget)
         self.part_number_status_Label.setObjectName("part_number_status_Label")
         self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.LabelRole, self.part_number_status_Label)
@@ -58,7 +58,7 @@ class Ui_PartNumberForm(object):
         self.retranslateUi(PartNumberForm)
         QtCore.QMetaObject.connectSlotsByName(PartNumberForm)
         PartNumberForm.setTabOrder(self.pn_entry_part_number_LineEdit, self.pn_entry_description_LineEdit)
-        PartNumberForm.setTabOrder(self.pn_entry_description_LineEdit, self.part_number_status_LineEdit)
+        PartNumberForm.setTabOrder(self.pn_entry_description_LineEdit, self.pn_entry_status_LineEdit)
 
     def retranslateUi(self, PartNumberForm):
         _translate = QtCore.QCoreApplication.translate

@@ -51,7 +51,7 @@ class SaleGoodsForm(QMainWindow, Ui_SaleGoodsForm):
         self.sale_goods_buttonBox.accepted.connect(self.create_sog)
         self.sale_goods_buttonBox.rejected.connect(self.reject_sog)
         self.setVisible(False)
-        
+
     def create_sog(self):
         # get the data from the form
         contract_num = self.sale_goods_contractComboBox.currentText()
@@ -77,11 +77,12 @@ class SaleGoodsForm(QMainWindow, Ui_SaleGoodsForm):
         self.reset_sog_form()
         
     def reject_sog(self):
-        self.parent.show_blank_verticalWidget_3()
-        self.parent.show_blank_verticalWidget_4()
-    
+        self.setVisible(False)
+        
     def reset_sog_form(self):
         self.sale_goods_quantitySpinBox.setValue(0)
+        self.sale_goods_descriptionLineEdit.setText("")
+        self.sale_goods_statusLineEdit.setText("")
 
         self.sale_goods_bottom_Label.setText("Working...")
        

@@ -1,1 +1,1 @@
-subprocess.run(["ls", "-l"])
+insert_goods_table, select_pn,
