@@ -18,6 +18,7 @@ class SaleGoodsForm(QMainWindow, Ui_SaleGoodsForm):
     def __init__(self, parent, con):
         # parent is instance of MainWindow
         # con is the db connection
+        # self is the sale of goods widget being created
 
         super().__init__()
         self.setupUi(self)
@@ -49,10 +50,8 @@ class SaleGoodsForm(QMainWindow, Ui_SaleGoodsForm):
 
         self.sale_goods_buttonBox.accepted.connect(self.create_sog)
         self.sale_goods_buttonBox.rejected.connect(self.reject_sog)
-
+        self.setVisible(False)
         
-        self.parent.verticalLayout_4.addWidget(self)
-    
     def create_sog(self):
         # get the data from the form
         contract_num = self.sale_goods_contractComboBox.currentText()

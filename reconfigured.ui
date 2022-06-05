@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="left_frame">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>141</width>
+      <height>591</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>9</y>
+       <width>121</width>
+       <height>571</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="left_layout"/>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="middle_frame">
+    <property name="geometry">
+     <rect>
+      <x>159</x>
+      <y>-1</y>
+      <width>471</width>
+      <height>591</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>451</width>
+       <height>571</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="middle_layout"/>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="right_frame">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>0</y>
+      <width>141</width>
+      <height>591</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>119</width>
+       <height>569</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="right_layout"/>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuContract">
+    <property name="title">
+     <string>Contract</string>
+    </property>
+    <addaction name="actionOpen"/>
+   </widget>
+   <widget class="QMenu" name="menuData">
+    <property name="title">
+     <string>Data</string>
+    </property>
+    <widget class="QMenu" name="menuConsideration">
+     <property name="title">
+      <string>Consideration</string>
+     </property>
+     <addaction name="actionSale_of_Goods"/>
+     <addaction name="actionServices"/>
+    </widget>
+    <addaction name="actionParty"/>
+    <addaction name="actionCounterparty"/>
+    <addaction name="menuConsideration"/>
+    <addaction name="actionPart_Number"/>
+    <addaction name="actionService_Number"/>
+   </widget>
+   <addaction name="menuContract"/>
+   <addaction name="menuData"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionParty">
+   <property name="text">
+    <string>Party</string>
+   </property>
+  </action>
+  <action name="actionCounterparty">
+   <property name="text">
+    <string>Counterparty</string>
+   </property>
+  </action>
+  <action name="actionSale_of_Goods">
+   <property name="text">
+    <string>Sale of Goods</string>
+   </property>
+  </action>
+  <action name="actionServices">
+   <property name="text">
+    <string>Services</string>
+   </property>
+  </action>
+  <action name="actionPart_Number">
+   <property name="text">
+    <string>Part Number</string>
+   </property>
+  </action>
+  <action name="actionService_Number">
+   <property name="text">
+    <string>Service Number</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

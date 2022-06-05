@@ -64,11 +64,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This Sale of Goods Agreement is between Titan and Charlie and is entered into this 14th day of May 2022.  Titan shall sell to Charlie Qty(1) dog bowl (the “Dog Bowl”) and deliver the Dog Bowl to Charlie on 16 May 2022.  In consideration for the Dog Bowl, Charlie shall pay to Titan 1 BTC.This Sale of Goods Agreement is entered into as of the date written above.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;_______________________&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Charlie&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;_______________________&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Titan&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="textInteractionFlags">
            <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -113,13 +109,13 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionImport"/>
    </widget>
-   <widget class="QMenu" name="menuManage">
+   <widget class="QMenu" name="menuCreate">
     <property name="title">
-     <string>Manage</string>
+     <string>Create</string>
     </property>
-    <widget class="QMenu" name="menuCreate">
+    <widget class="QMenu" name="menuNew">
      <property name="title">
-      <string>Create</string>
+      <string>New Data</string>
      </property>
      <widget class="QMenu" name="menuConsideration">
       <property name="title">
@@ -135,10 +131,10 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionPart_Number"/>
      <addaction name="actionService_Number"/>
     </widget>
-    <addaction name="menuCreate"/>
+    <addaction name="menuNew"/>
    </widget>
    <addaction name="menuContract"/>
-   <addaction name="menuManage"/>
+   <addaction name="menuCreate"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionImport">
