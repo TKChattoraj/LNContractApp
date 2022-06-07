@@ -122,8 +122,7 @@
      <addaction name="actionSale_of_Goods"/>
      <addaction name="actionSale_of_Services"/>
     </widget>
-    <addaction name="actionParty"/>
-    <addaction name="actionCounterparty"/>
+    <addaction name="actionEntity"/>
     <addaction name="menuConsideration"/>
     <addaction name="actionPart_Number"/>
     <addaction name="actionService_Number"/>
@@ -132,9 +131,9 @@
    <addaction name="menuData"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionParty">
+  <action name="actionEntity">
    <property name="text">
-    <string>Party</string>
+    <string>Entity</string>
    </property>
   </action>
   <action name="actionCounterparty">

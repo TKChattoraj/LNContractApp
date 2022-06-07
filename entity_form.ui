@@ -215,7 +215,7 @@
      </spacer>
     </item>
     <item row="13" column="1">
-     <widget class="QLineEdit" name="enitity_server_address_port_LineEdit"/>
+     <widget class="QLineEdit" name="entity_server_address_port_LineEdit"/>
     </item>
     <item row="14" column="0">
      <spacer name="horizontalSpacer_10">
@@ -229,6 +229,13 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="14" column="1">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>TLS Cert Location</string>
+      </property>
+     </widget>
     </item>
     <item row="15" column="0">
      <spacer name="horizontalSpacer_11">
@@ -244,9 +251,9 @@
      </spacer>
     </item>
     <item row="15" column="1">
-     <widget class="QLineEdit" name="enitity_server_tls_LineEdit"/>
+     <widget class="QLineEdit" name="entity_server_tls_LineEdit"/>
     </item>
-    <item row="16" column="0" colspan="2">
+    <item row="17" column="0" colspan="2">
      <spacer name="horizontalSpacer_15">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -259,21 +266,14 @@
       </property>
      </spacer>
     </item>
-    <item row="17" column="0" colspan="2">
+    <item row="18" column="0" colspan="2">
      <widget class="QDialogButtonBox" name="entity_buttonBox">
       <property name="standardButtons">
        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
       </property>
      </widget>
     </item>
-    <item row="14" column="1">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>TLS Cert Location</string>
-      </property>
-     </widget>
-    </item>
-    <item row="18" column="0" colspan="2">
+    <item row="19" column="0" colspan="2">
      <widget class="QLabel" name="entity_bottem_Label">
       <property name="font">
        <font>

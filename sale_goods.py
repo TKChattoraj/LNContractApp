@@ -64,7 +64,7 @@ class SaleGoodsForm(QMainWindow, Ui_SaleGoodsForm):
         date_str = date.toString()
         tender=False
         
-        # get the primary ids for the foregin keys for contracts, part number and entities
+        # get the primary ids for the foreign keys for contracts, part number and entities
         contract_id=get_db_id(self.con,"contracts", "contract_no", contract_num)
         pn_id=get_db_id(self.con,"goods", "part_number", pn)
         obligor_id=get_db_id(self.con, "entities", "name", obligor_name)

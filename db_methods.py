@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtGui import QAction, QCursor
-from db_initialize_methods import initialize_table
+
 
 def select_sig(con):
     query=QSqlQuery(con)
@@ -55,6 +55,15 @@ def select_contracts(con):
     query.exec(query_text)
     return query
 
+def select_last_id(con, table):
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query_text="SELECT id FROM {} WHERE id = (SELECT MAX(id) FROM {})".format(table, table)
+    query.exec(query_text)
+    query.first()
+    return query.value(0)
+
 def insert_goods_table(con, data):
     query_text="INSERT INTO goods (part_number, description, status) VALUES (?, ?, ?)"
     insert_in_table(con, query_text, data)
@@ -75,8 +84,12 @@ def insert_ln_nodes_table(con, data):
     query_text="INSERT INTO ln_nodes (address, tls_path, macaroon_path, status) VALUES (?, ?, ?, ?)"
     insert_in_table(con, query_text, data)
 
-def insert_kcomm_server_table(con, data):
-    query_text="INSERT INTO ln_nodes (address, tls_cert, status) VALUES (?, ?, ?, ?)"
+def insert_kcomm_servers_table(con, data):
+    query_text="INSERT INTO kcomm_servers (address, tls_cert, status) VALUES (?, ?, ?)"
+    insert_in_table(con, query_text, data)
+
+def insert_entities_table(con, data):
+    query_text="INSERT INTO entities (name, ln_node_id, kcomm_server_id, status) VALUES (?, ?, ?, ?)"
     insert_in_table(con, query_text, data)
 
 def insert_in_table(con, query_text, data):
@@ -88,7 +101,6 @@ def insert_in_table(con, query_text, data):
         for e in t:
             query.addBindValue(e)
         query.exec()
-    return last_row_id(con)
 
 def get_db_id(con,table, column, value):
     

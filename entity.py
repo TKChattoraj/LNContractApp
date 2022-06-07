@@ -3,8 +3,12 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget
 from PyQt6.QtCore import Qt, QDate, QTimer
 from entity_form import Ui_EntityForm
-from db_methods import insert_ln_nodes_table, insert_kcomm_server_table
-
+from db_methods import (
+    insert_ln_nodes_table, 
+    insert_kcomm_servers_table,
+    select_last_id,
+    insert_entities_table
+)
 
 class EntityForm(QWidget, Ui_EntityForm):
     
@@ -33,30 +37,29 @@ class EntityForm(QWidget, Ui_EntityForm):
         lnd_location=self.entity_lnd_address_port_LineEdit.text()
         lnd_tls=self.entity_lnd_tls_LineEdit.text()
         lnd_macaroon=self.entity_macaroon_LineEdit.text()
-        contract_server=self.enitity_server_address_port_LineEdit.text()
-        contract_tls=self.enitity_server_tls_LineEdittext()
+        contract_server=self.entity_server_address_port_LineEdit.text()
+        contract_tls=self.entity_server_tls_LineEdit.text()
         entity_status= ""
 
         # insert lnd data into ln_nodes table of db: 
-        status = ""
+        status=""
         data = [(lnd_location, lnd_tls, lnd_macaroon, status)]
-        ln_node_id=insert_ln_nodes_table(self.con, data)
-        print("ln node id:")
-        print(ln_node_id)
-
+        insert_ln_nodes_table(self.con, data)
+        
         # insert k comm server data into kcomm_servers table of db:
         status = ""
         data = [(contract_server, contract_tls, status)]
-        insert_kcomm_server_table(self.con, data)
+        insert_kcomm_servers_table(self.con, data)
 
         # get the lnd and kcomm server ids for what was just input
+        ln_id=select_last_id(self.con, "ln_nodes")
+        kcomm_id=select_last_id(self.con, "kcomm_servers")
 
+        # insert data into entities table of db:
+        data=[(entity_name, ln_id, kcomm_id, entity_status)]
+        insert_entities_table(self.con, data)
 
-
-
-
-        #reset part number form()
-
+        #resetentity form()
         self.reset_entity_form()        
     
     def reject_entity(self):
@@ -64,14 +67,18 @@ class EntityForm(QWidget, Ui_EntityForm):
 
     def reset_entity_form(self):
         
-        self.sn_bottem_Label.setText("Working...")
-        self.sn_entry_service_number_LineEdit.setText("")
-        self.sn_entry_description_LineEdit.setText("")
-        self.sn_entry_status_LineEdit.setText("")
+        #self.entity_bottem_Label.setText("Working...")
+        self.entity_name_LineEdit.setText("")
+        self.entity_lnd_address_port_LineEdit.setText("")
+        self.entity_lnd_tls_LineEdit.setText("")
+        self.entity_macaroon_LineEdit.setText("")
+        self.entity_server_address_port_LineEdit.setText("")
+        self.entity_server_tls_LineEdit.setText("")
         
         # Show display as "Working..." for 1.5 seconds and then show
-        # "Done." message.  Tiome delay is to make the change and notice 
+        # "Done." message.  Time delay is to make the change and notice 
         # message noticable to user.
+
         timer = QTimer(self)
         timer.setSingleShot(True)   
         timer.timeout.connect(self.update_bottom_label)
@@ -79,7 +86,7 @@ class EntityForm(QWidget, Ui_EntityForm):
 
     # update the bottom lable of the sos form.    
     def update_bottom_label(self):
-        self.sn_bottem_Label.setText("Done.  Enter another or quit.")
+        self.entity_bottem_Label.setText("Done.  Enter another or quit.")
 
 
         

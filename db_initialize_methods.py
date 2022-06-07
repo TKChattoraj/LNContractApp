@@ -150,7 +150,23 @@ def initialize_table(con, query_text, data):
         query.exec()
     #love you dad
 
+def select_last_id(con, table):
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query_text="SELECT id FROM {} WHERE id = (SELECT MAX(id) FROM {})".format(table, table)
+    query.exec(query_text)
+    query.first()
+    return query.value(0)
 
+def last_row_id(con):
+    query=QSqlQuery(con)
+    query_text="SELECT last_insert_rowid()"
+    query.exec(query_text)
+    query.first()
+    id=query.value(0)
+    query.finish()
+    return id
 
 # application    
 
@@ -175,8 +191,15 @@ initialize_methods = [
 if not con.open():
     print("Database Error: %s" % con.lastError().databaseText())
     sys.exit(1)
-for m in initialize_methods:
-    m(con)
+# for m in initialize_methods:
+#     m(con)
+
+q=select_last_id(con, "ln_nodes")
+
+# i=last_row_id(con)
+# print(i)
+
+print(q)
 
 
 
