@@ -23,37 +23,39 @@ from PyQt6.QtGui import QAction, QCursor
 
 
 # Get the sample tls cert and sample macaroon
-cert = open(os.path.expanduser('/home/tarun/.polar/networks/1/volumes/lnd/alice/tls.cert'), 'rb').read()
-print("Cert")
-print(cert)
-print(type(cert))
-cert_qb=QByteArray(cert)
+# cert = open(os.path.expanduser('/home/tarun/.polar/networks/1/volumes/lnd/alice/tls.cert'), 'rb').read()
+# print("Cert")
+# print(cert)
+# print(type(cert))
+# cert_qb=QByteArray(cert)
+tls_path="/home/tarun/.polar/networks/1/volumes/lnd/alice/tls.cert"
 
-with open(os.path.expanduser('/home/tarun/.polar/networks/1/volumes/lnd/alice/data/chain/bitcoin/regtest/admin.macaroon'), 'rb') as f:
-    macaroon_bytes = f.read()
-    print("macaroon bytes")
-    print(macaroon_bytes)
-    print(type(cert))
-    print("macaroon encode")
-    macaroon = codecs.encode(macaroon_bytes, 'hex')
-    print(macaroon)
-    print(type(macaroon))
-    macaroon_qb=QByteArray(macaroon)
-
-
+# with open(os.path.expanduser('/home/tarun/.polar/networks/1/volumes/lnd/alice/data/chain/bitcoin/regtest/admin.macaroon'), 'rb') as f:
+#     macaroon_bytes = f.read()
+#     print("macaroon bytes")
+#     print(macaroon_bytes)
+#     print(type(cert))
+#     print("macaroon encode")
+#     macaroon = codecs.encode(macaroon_bytes, 'hex')
+#     print(macaroon)
+#     print(type(macaroon))
+#     macaroon_qb=QByteArray(macaroon)
+macaroon_path="/home/tarun/.polar/networks/1/volumes/lnd/alice/data/chain/bitcoin/regtest/admin.macaroon"
+address_port="https://192.168.1.16:8500"
+address_port2="https://192.168.1.16:8501"
 # initialize the ln_node table
 def initialize_ln_node_table(con):
     # Populate the kcomm_server table
     query_text = """
         INSERT INTO ln_nodes (
             address,
-            tls_cert,
-            macaroon,
+            tls_path,
+            macaroon_path,
             status
         )
         VALUES (?, ?, ?, ?)
         """
-    data = [("http://192.168.1.16/", cert_qb, macaroon_qb, "status1"), ("http://192.168.1.13/", cert_qb, macaroon_qb, "status2")]
+    data = [(address_port, tls_path, macaroon_path, "status1"), (address_port2, tls_path, macaroon_path, "status2")]
     initialize_table(con, query_text, data)
 
 
@@ -67,7 +69,7 @@ def initialize_kcomm_servers_table(con):
         )
         VALUES (?, ?, ?)
         """
-    data = [("http://192.168.1.15/", cert_qb, "status3"), ("http://192.168.1.12/", cert_qb, "status4")]
+    data = [("http://192.168.1.15/", tls_path, "status3"), ("http://192.168.1.12/", tls_path, "status4")]
     initialize_table(con, query_text, data)
 
 # initialize the entities table
@@ -147,5 +149,34 @@ def initialize_table(con, query_text, data):
             query.addBindValue(e)
         query.exec()
     #love you dad
+
+
+
+# application    
+
+con = QSqlDatabase.addDatabase("QSQLITE")
+con.setDatabaseName("lncontract_db.sqlite")
+
+initialize_methods = [
+    initialize_ln_node_table, 
+    initialize_kcomm_servers_table, 
+    initialize_entities_table, 
+    initialize_contracts_table,
+    initialize_ktexts_table,
+    initialize_goods_table,
+    initialize_services_table,
+    initialize_monetary_obligations_table,
+    initialize_sale_goods_table,
+    initialize_sale_services_table,
+    initialize_signatures_table
+    ]
+
+# Open the connection
+if not con.open():
+    print("Database Error: %s" % con.lastError().databaseText())
+    sys.exit(1)
+for m in initialize_methods:
+    m(con)
+
 
 

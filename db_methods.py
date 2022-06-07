@@ -49,17 +49,19 @@ def select_sn(con):
     query.exec(query_text)
     return query
 
-
 def select_contracts(con):
     query=QSqlQuery(con)
     query_text="SELECT id, contract_no, party_id, counterparty_id, description, status FROM contracts"
     query.exec(query_text)
     return query
 
-
 def insert_goods_table(con, data):
     query_text="INSERT INTO goods (part_number, description, status) VALUES (?, ?, ?)"
-    initialize_table(con, query_text, data)
+    insert_in_table(con, query_text, data)
+
+def insert_services_table(con, data):
+    query_text="INSERT INTO services (service_number, description, status) VALUES (?, ?, ?)"
+    insert_in_table(con, query_text, data)
 
 def insert_sale_goods(con, data):
     query_text="INSERT INTO sale_goods (contract_id, goods_id, entity_id, quantity, due_date, tender, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
@@ -67,6 +69,14 @@ def insert_sale_goods(con, data):
 
 def insert_sale_service(con, data):
     query_text="INSERT INTO sale_services (contract_id, service_id, entity_id, quantity, due_date, tender, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    insert_in_table(con, query_text, data)
+
+def insert_ln_nodes_table(con, data):
+    query_text="INSERT INTO ln_nodes (address, tls_path, macaroon_path, status) VALUES (?, ?, ?, ?)"
+    insert_in_table(con, query_text, data)
+
+def insert_kcomm_server_table(con, data):
+    query_text="INSERT INTO ln_nodes (address, tls_cert, status) VALUES (?, ?, ?, ?)"
     insert_in_table(con, query_text, data)
 
 def insert_in_table(con, query_text, data):
@@ -78,6 +88,7 @@ def insert_in_table(con, query_text, data):
         for e in t:
             query.addBindValue(e)
         query.exec()
+    return last_row_id(con)
 
 def get_db_id(con,table, column, value):
     
@@ -86,5 +97,14 @@ def get_db_id(con,table, column, value):
     query.exec(query_text)
     query.first()
     id=query.value(0) #returning the value in 0 position of the query
+    query.finish()
+    return id
+
+def last_row_id(con):
+    query=QSqlQuery(con)
+    query_text="SELECT last_insert_rowid()"
+    query.exec(query_text)
+    query.first()
+    id=query.value(0)
     query.finish()
     return id

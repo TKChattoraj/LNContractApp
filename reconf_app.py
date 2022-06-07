@@ -12,12 +12,16 @@ from sale_goods_form import Ui_SaleGoodsForm
 from sale_service_form import Ui_SaleServiceForm
 from part_number_form import Ui_PartNumberForm
 from service_number_form import Ui_ServiceNumberForm
+from entity_form import Ui_EntityForm
+
+
 from db_methods import select_entities, insert_goods_table, select_pn, select_contracts, get_db_id, insert_sale_goods
 
 from sale_goods import SaleGoodsForm
 from sale_service import SaleServiceForm
 from part_number import PartNumberForm
 from service_number import ServiceNumberForm
+from entity import EntityForm
         
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -38,6 +42,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pn_form_widget = PartNumberForm(self, self.con)
         # set up the service number form:
         self.sn_form_widget=ServiceNumberForm(self,self.con)
+        # set up the enitity form:
+        self.entity_form_widget=EntityForm(self, self.con)
 
         
         # add various widgets to the middle_layout
@@ -45,6 +51,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.middle_layout.addWidget(self.sale_goods_form_widget)
         self.middle_layout.addWidget(self.sale_service_form_widget)
         self.middle_layout.addWidget(self.pn_form_widget)
+        self.middle_layout.addWidget(self.sn_form_widget)
 
 
         # connect action triggers to slots
@@ -52,6 +59,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionSale_of_Goods.triggered.connect(self.show_sale_of_goods_form)
         self.actionSale_of_Services.triggered.connect(self.show_sale_of_service_form)
         self.actionPart_Number.triggered.connect(self.show_part_number_form)
+        self.actionService_Number.triggered.connect(self.show_service_number_form)
 
 
         # self.horizontalLayoutWidget_2a = QtWidgets.QWidget(self.centralwidget)
@@ -100,18 +108,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sale_goods_form_widget.setVisible(True)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(False)
+        self.sn_form_widget.setVisible(False)
 
     def show_sale_of_service_form (self):
         self.contract_view_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(True)
         self.pn_form_widget.setVisible(False)
+        self.sn_form_widget.setVisible(False)
 
     def show_part_number_form(self):
         self.contract_view_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(True)
+        self.sn_form_widget.setVisible(False)
+
+    def show_service_number_form(self):
+        self.contract_view_widget.setVisible(False)
+        self.sale_goods_form_widget.setVisible(False)
+        self.sale_service_form_widget.setVisible(False)
+        self.pn_form_widget.setVisible(False)
+        self.sn_form_widget.setVisible(True)
 
    
 

@@ -62,8 +62,8 @@ ln_nodes="""
     CREATE TABLE IF NOT EXISTS ln_nodes (
         id INTEGER PRIMARY KEY UNIQUE NOT NULL,
         address VARCHAR(50) NOT NULL,
-        tls_cert BLOB,
-        macaroon BLOB,
+        tls_path VARCHAR(500),
+        macaroon_path VARCHAR(500),
         status VARCHAR(50)
     )
     """
@@ -71,7 +71,7 @@ kcomm_servers="""
     CREATE TABLE IF NOT EXISTS kcomm_servers (
         id INTEGER PRIMARY KEY UNIQUE NOT NULL,
         address VARCHAR(50) NOT NULL,
-        tls_cert BLOB,
+        tls_cert VARCHAR(500),
         status VARCHAR(50)
     )
     """
@@ -85,7 +85,7 @@ sale_goods="""
         due_date TEXT NOT NULL,
         tender BOOL NOT NULL,
         description VARCHAR(50),
-        status VARHCHAR(50)
+        status VARCHAR(50)
     )
     """
 sale_services="""
@@ -98,7 +98,7 @@ sale_services="""
         due_date TEXT NOT NULL,
         tender BOOL NOT NULL,
         description VARCHAR(50),
-        status VARHCHAR(50)
+        status VARCHAR(50)
     )
     """
 
@@ -110,7 +110,7 @@ monetary_obligations="""
         unit VARCHAR(10) NOT NULL,
         due_date TEXT NOT NULL,
         tender BOOL NOT NULL,
-        status VARHCAR(50)
+        status VARCHAR(50)
     )
 """
 
@@ -143,5 +143,13 @@ def create_db_tables(con):
         createTableQuery.exec(t)     
     print(con.tables())
 
+# application    
 
+con = QSqlDatabase.addDatabase("QSQLITE")
+con.setDatabaseName("lncontract_db.sqlite")
 
+# Open the connection
+if not con.open():
+    print("Database Error: %s" % con.lastError().databaseText())
+    sys.exit(1)
+create_db_tables(con)
