@@ -40,6 +40,12 @@ class EntityForm(QWidget, Ui_EntityForm):
         contract_server=self.entity_server_address_port_LineEdit.text()
         contract_tls=self.entity_server_tls_LineEdit.text()
         entity_status= ""
+        if self.entity_party_radioButton.isChecked():
+            party=True
+        else:
+            party=False
+        print("party")
+        print(party)
 
         # insert lnd data into ln_nodes table of db: 
         status=""

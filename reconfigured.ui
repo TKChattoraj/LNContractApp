@@ -126,6 +126,7 @@
     <addaction name="menuConsideration"/>
     <addaction name="actionPart_Number"/>
     <addaction name="actionService_Number"/>
+    <addaction name="actionContract"/>
    </widget>
    <addaction name="menuContract"/>
    <addaction name="menuData"/>
@@ -164,6 +165,11 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionContract">
+   <property name="text">
+    <string>Contract</string>
    </property>
   </action>
  </widget>

@@ -74,13 +74,15 @@ def initialize_kcomm_servers_table(con):
 
 # initialize the entities table
 def initialize_entities_table(con):
-    query_text="INSERT INTO entities (name, ln_node_id, kcomm_server_id, status) VALUES (?, ?, ?, ?)"
+    query_text="INSERT INTO entities (name, ln_node_id, kcomm_server_id, party, status) VALUES (?, ?, ?, ?, ?)"
     
     id1=1
     id2=2
+    p1=True
+    p2=False
     print("id1: {id1}")
     print("id2: {id2}")
-    data=[("Titan", id1, id2, "status7"), ("Champ", id2, id1, "status8")]
+    data=[("Titan", id1, id2, p1, "status7"), ("Champ", id2, id1, p2, "status8")]
     initialize_table(con, query_text, data)
 
 # initialize the contracts table
@@ -191,15 +193,15 @@ initialize_methods = [
 if not con.open():
     print("Database Error: %s" % con.lastError().databaseText())
     sys.exit(1)
-# for m in initialize_methods:
-#     m(con)
+for m in initialize_methods:
+    m(con)
 
-q=select_last_id(con, "ln_nodes")
+# q=select_last_id(con, "ln_nodes")
 
-# i=last_row_id(con)
-# print(i)
+# # i=last_row_id(con)
+# # print(i)
 
-print(q)
+#print(q)
 
 
 

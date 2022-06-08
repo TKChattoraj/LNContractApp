@@ -54,6 +54,7 @@ entities="""
         name VARCHAR(50) UNIQUE NOT NULL,
         ln_node_id INTEGER,
         kcomm_server_id INTEGER,
+        party INTEGER,
         status VARCHAR(50)
     )
     """
