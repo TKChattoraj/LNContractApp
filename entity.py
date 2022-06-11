@@ -40,6 +40,7 @@ class EntityForm(QWidget, Ui_EntityForm):
         contract_server=self.entity_server_address_port_LineEdit.text()
         contract_tls=self.entity_server_tls_LineEdit.text()
         entity_status= ""
+
         if self.entity_party_radioButton.isChecked():
             party=True
         else:
@@ -62,7 +63,7 @@ class EntityForm(QWidget, Ui_EntityForm):
         kcomm_id=select_last_id(self.con, "kcomm_servers")
 
         # insert data into entities table of db:
-        data=[(entity_name, ln_id, kcomm_id, entity_status)]
+        data=[(entity_name, ln_id, kcomm_id, party, entity_status)]
         insert_entities_table(self.con, data)
 
         #resetentity form()

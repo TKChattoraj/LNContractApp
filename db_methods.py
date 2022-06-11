@@ -33,7 +33,7 @@ def select_sig(con):
 
 def select_entities(con):
     query=QSqlQuery(con)
-    query_text="SELECT id, name, ln_node_id, kcomm_server_id, status FROM entities"
+    query_text="SELECT id, name, ln_node_id, kcomm_server_id, party, status FROM entities"
     query.exec(query_text)
     return query
 
@@ -89,8 +89,12 @@ def insert_kcomm_servers_table(con, data):
     insert_in_table(con, query_text, data)
 
 def insert_entities_table(con, data):
-    query_text="INSERT INTO entities (name, ln_node_id, kcomm_server_id, status) VALUES (?, ?, ?, ?)"
+    query_text="INSERT INTO entities (name, ln_node_id, kcomm_server_id, party, status) VALUES (?, ?, ?, ?, ?)"
     insert_in_table(con, query_text, data)
+
+def insert_contract_doc(con, data):
+    query_text= "INSERT INTO ktexts (filename) VALUES (?)"
+    insert_in_table(con,query_text,data)
 
 def insert_in_table(con, query_text, data):
     print(f"query_texts: {query_text}")

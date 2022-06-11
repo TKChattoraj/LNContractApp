@@ -127,6 +127,7 @@
     <addaction name="actionPart_Number"/>
     <addaction name="actionService_Number"/>
     <addaction name="actionContract"/>
+    <addaction name="actionLoad_Contract_Docs"/>
    </widget>
    <addaction name="menuContract"/>
    <addaction name="menuData"/>
@@ -170,6 +171,11 @@
   <action name="actionContract">
    <property name="text">
     <string>Contract</string>
+   </property>
+  </action>
+  <action name="actionLoad_Contract_Docs">
+   <property name="text">
+    <string>Load Contract Docs</string>
    </property>
   </action>
  </widget>

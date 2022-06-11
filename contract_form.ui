@@ -73,14 +73,7 @@
     <item row="9" column="1">
      <widget class="QLineEdit" name="contract_document_LineEdit"/>
     </item>
-    <item row="16" column="0" colspan="2">
-     <widget class="QDialogButtonBox" name="contract_buttonBox">
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-      </property>
-     </widget>
-    </item>
-    <item row="17" column="0" colspan="2">
+    <item row="19" column="0" colspan="2">
      <widget class="QLabel" name="contract_bottem_Label">
       <property name="font">
        <font>
@@ -92,7 +85,7 @@
       </property>
      </widget>
     </item>
-    <item row="10" column="0" colspan="2">
+    <item row="10" column="0">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -104,6 +97,40 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="10" column="1">
+     <widget class="QPushButton" name="contract_doc_browse_pushButton">
+      <property name="text">
+       <string>Browse</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0" colspan="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="21" column="0" colspan="2">
+     <widget class="QLabel" name="contract_bottom_Label">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="17" column="1">
+     <widget class="QDialogButtonBox" name="contract_buttonBox">
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
