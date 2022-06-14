@@ -64,6 +64,59 @@ def select_last_id(con, table):
     query.first()
     return query.value(0)
 
+def select_party_with_id(con, id):
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query_text="SELECT id, name, ln_node_id, kcomm_server_id, party FROM entities WHERE id={}".format(id)
+    query.exec(query_text)
+    print("last query")
+    print(query.lastQuery())
+    print ("party query active?")
+    print(query.isActive())
+    query.next()
+    return query
+
+def select_ktext(con,k_id):
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query_text="SELECT filename FROM ktexts WHERE contract_id={}".format(k_id)
+    query.exec(query_text)
+    print("last query")
+    print(query.lastQuery())
+    print ("party query active?")
+    print(query.isActive())
+    query.next()
+    return query
+
+def select_ln_node(con, id):
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query_text="SELECT id, address, tls_path, macaroon_path, status FROM ln_nodes WHERE id={}".format(id)
+    query.exec(query_text)
+    print("last query")
+    print(query.lastQuery())
+    print ("party query active?")
+    print(query.isActive())
+    query.next()
+    return query
+
+def select_kcomm(con, id):
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query_text="SELECT id, address, tls_cert, status FROM kcomm_servers WHERE id={}".format(id)
+    query.exec(query_text)
+    print("last query")
+    print(query.lastQuery())
+    print ("party query active?")
+    print(query.isActive())
+    query.next()
+    return query
+
+
 def insert_goods_table(con, data):
     query_text="INSERT INTO goods (part_number, description, status) VALUES (?, ?, ?)"
     insert_in_table(con, query_text, data)
@@ -93,8 +146,12 @@ def insert_entities_table(con, data):
     insert_in_table(con, query_text, data)
 
 def insert_contract_doc(con, data):
-    query_text= "INSERT INTO ktexts (filename) VALUES (?)"
+    query_text= "INSERT INTO ktexts (filename, contract_id) VALUES (?, ?)"
     insert_in_table(con,query_text,data)
+
+def insert_contract(con, data):
+    query_text="INSERT INTO contracts (contract_no, party_id, counterparty_id, description, status) VALUES (?, ?, ?, ?, ?)"
+    insert_in_table(con, query_text, data)
 
 def insert_in_table(con, query_text, data):
     print(f"query_texts: {query_text}")
@@ -106,7 +163,7 @@ def insert_in_table(con, query_text, data):
             query.addBindValue(e)
         query.exec()
 
-def get_db_id(con,table, column, value):
+def get_db_id(con, table, column, value):
     
     query=QSqlQuery(con)
     query_text=f"SELECT id FROM {table} WHERE {column} = '{value}'"

@@ -47,21 +47,43 @@ class Consideration():
         print(self.type.description)
         print(self.due_date)
 
+class Party():
+    def __init__(self, id, name, ln_node, kcomm_server):
+        # need id, name, ln_node, kcomm_server
+        self.id=id
+        self.name=name
+        self.ln_node=ln_node
+        self.kcom_server=kcomm_server
+
+class LnNode():
+    def __init__(self, id, address, tls_path, macaroon_path, status="" ):
+        self.id=id
+        self.address=address
+        self.tls_path=tls_path
+        self.macaroon_path=macaroon_path
+        self.status=status
+
+class KCommServer():
+    def __init__(self, id, address, tls_cert, status=""):
+        self.id=id
+        self.address=address
+        self.tls_cert=tls_cert
+        self.status=status
 
 
 
-if __name__ == "__main__":
-    import sys
-    g = Good()
-    gg = Good(part_number="x1q44", description="An upgrade to a nomimal good", qty=3)
+# if __name__ == "__main__":
+#     import sys
+#     g = Good()
+#     gg = Good(part_number="x1q44", description="An upgrade to a nomimal good", qty=3)
   
-    # s=MonetaryPayment()
-    # b=MonetaryPayment(description="A Bitcoin payment", qty=1, unit=MonetaryUnit.BITCOIN)
-    # d=MonetaryPayment(description="A Dollar payment", qty=2, unit=MonetaryUnit.DOLLAR)
+#     # s=MonetaryPayment()
+#     # b=MonetaryPayment(description="A Bitcoin payment", qty=1, unit=MonetaryUnit.BITCOIN)
+#     # d=MonetaryPayment(description="A Dollar payment", qty=2, unit=MonetaryUnit.DOLLAR)
 
-    sv = Service()
-    sv1 = Service(description="An improved servce", qty=2)
+#     sv = Service()
+#     sv1 = Service(description="An improved servce", qty=2)
 
-    # review = Service(description="Legal review of case", qty=1)
-    # due = datetime.datetime(2022, 5, 16)
-    # con = Consideration(type=review, due_date=due)
+#     # review = Service(description="Legal review of case", qty=1)
+#     # due = datetime.datetime(2022, 5, 16)
+#     # con = Consideration(type=review, due_date=due)

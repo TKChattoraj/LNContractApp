@@ -93,7 +93,6 @@ class EntityForm(QWidget, Ui_EntityForm):
 
     # update the bottom lable of the sos form.    
     def update_bottom_label(self):
-        self.entity_bottem_Label.setText("Done.  Enter another or quit.")
+        self.entity_bottom_Label.setText("Done.  Enter another or quit.")
 
 
-        

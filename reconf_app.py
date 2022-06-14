@@ -33,6 +33,7 @@ from part_number import PartNumberForm
 from service_number import ServiceNumberForm
 from entity import EntityForm
 from contract import ContractForm
+from load_contract import LoadContractForm
         
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -57,6 +58,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.entity_form_widget=EntityForm(self, self.con)
         # set up the contract form:
         self.contract_form_widget=ContractForm(self,self.con)
+        # set up the load contract form:
+        self.load_contract_form_widget=LoadContractForm(self, self.con)
 
         
         # add various widgets to the middle_layout
@@ -67,10 +70,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.middle_layout.addWidget(self.sn_form_widget)
         self.middle_layout.addWidget(self.entity_form_widget)
         self.middle_layout.addWidget(self.contract_form_widget)
+        self.middle_layout.addWidget(self.load_contract_form_widget)
 
 
-        # connect action triggers to slots
-        self.actionOpen.triggered.connect(self.open_) 
+        # connect action triggers to slots 
         self.actionSale_of_Goods.triggered.connect(self.show_sale_of_goods_form)
         self.actionSale_of_Services.triggered.connect(self.show_sale_of_service_form)
         self.actionPart_Number.triggered.connect(self.show_part_number_form)
@@ -78,19 +81,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionEntity.triggered.connect(self.show_entity_form)
         self.actionLoad_Contract_Docs.triggered.connect(self.load_contract_docs)
         self.actionContract.triggered.connect(self.show_contract_form)
+        self.actionLoad_Contract.triggered.connect(self.show_load_contract_form)
 
-
-    def open_(self):
+    def show_load_contract_form(self):
         # will eventually take the selected contract name/description
         # and load the TextEdit with the appropriate html
         # and then make visible.
 
-        with open("./contract.html", 'r', encoding='utf-8') as k:
-            html=k.read()
-        self.contract_view_widget.textEdit.setHtml(html)
+        # with open("./contract.html", 'r', encoding='utf-8') as k:
+        #     html=k.read()
+        # self.contract_view_widget.textEdit.setHtml(html)
 
         # the the desired view to True and others to False
-        self.contract_view_widget.setVisible(True)
+        self.load_contract_form_widget.setVisible(True)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(False)
@@ -99,7 +102,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_form_widget.setVisible(False)
     
     def show_sale_of_goods_form (self):
-        self.contract_view_widget.setVisible(False)
+        self.load_contract_form_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(True)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(False)
@@ -108,7 +111,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_form_widget.setVisible(False)
 
     def show_sale_of_service_form (self):
-        self.contract_view_widget.setVisible(False)
+        self.load_contract_form_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(True)
         self.pn_form_widget.setVisible(False)
@@ -117,7 +120,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_form_widget.setVisible(False)
 
     def show_part_number_form(self):
-        self.contract_view_widget.setVisible(False)
+        self.load_contract_form_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(True)
@@ -126,7 +129,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_form_widget.setVisible(False)
 
     def show_service_number_form(self):
-        self.contract_view_widget.setVisible(False)
+        self.load_contract_form_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(False)
@@ -135,7 +138,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_form_widget.setVisible(False)
 
     def show_entity_form(self):
-        self.contract_view_widget.setVisible(False)
+        self.load_contract_form_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(False)
@@ -144,7 +147,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.contract_form_widget.setVisible(False)
 
     def show_contract_form(self):
-        self.contract_view_widget.setVisible(False)
+        self.load_contract_form_widget.setVisible(False)
         self.sale_goods_form_widget.setVisible(False)
         self.sale_service_form_widget.setVisible(False)
         self.pn_form_widget.setVisible(False)
@@ -156,10 +159,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         file_dialog=QFileDialog(self, "Select Contract", "home/tarun/LNContractApp")
         print(file_dialog)
         if file_dialog.exec():
+            # need to deal with the case of multiple selected files
+            # below just assumes one file
             contract_file=file_dialog.selectedFiles()
-            data=[(contract_file)]
+            print("selected file:")
+            print(contract_file[0])
+            contract_id=""
+            data=[(contract_file[0], contract_id)]
             insert_contract_doc(self.con, data)
-
 
 
 
