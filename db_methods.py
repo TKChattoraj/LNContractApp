@@ -64,7 +64,7 @@ def select_last_id(con, table):
     query.first()
     return query.value(0)
 
-def select_party_with_id(con, id):
+def select_entity_with_id(con, id):
     query=QSqlQuery(con)
     # think about injection risk?  table doesn't come from user
     # but is internal to the app
@@ -76,6 +76,27 @@ def select_party_with_id(con, id):
     print(query.isActive())
     query.next()
     return query
+
+def select_record_with_id(con, id, table):
+    column_names=get_column_names(con, table) # a list
+    query_text="SELECT {} FROM {} WHERE id={}".format(", ".join(column_names), table, id)
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query.exec(query_text)
+    print ("get record query active?")
+    print(query.isActive())
+    query.next()
+    return query
+
+def get_column_names(con, table):
+    record=con.record(table)
+    n= record.count()
+    i=0
+    column_names=[]
+    for i in range(n):
+        column_names.append(record.fieldName(i))
+    return column_names
 
 def select_ktext(con,k_id):
     query=QSqlQuery(con)
