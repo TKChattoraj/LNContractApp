@@ -89,6 +89,25 @@ def select_record_with_id(con, id, table):
     query.next()
     return query
 
+def select_record_with_column_value(con, table, col, col_value):
+    # table is the table from which values will be retireived
+    # col is the column of the table
+    # col_value is the value of the column
+
+    column_names=get_column_names(con, table) # a list
+    query_text="SELECT {} FROM {} WHERE {}={}".format(", ".join(column_names), table, col, col_value)
+    query=QSqlQuery(con)
+    # think about injection risk?  table doesn't come from user
+    # but is internal to the app
+    query.exec(query_text)
+    print ("get record query active?")
+
+    if query.isActive():
+        return query
+    else:
+        print("Error in selecting recording")
+        return "error!"
+
 def get_column_names(con, table):
     record=con.record(table)
     n= record.count()

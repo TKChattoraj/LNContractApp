@@ -47,13 +47,21 @@ class Consideration():
         print(self.type.description)
         print(self.due_date)
 
-class Party():
+class Entity():
     def __init__(self, id, name, ln_node, kcomm_server):
         # need id, name, ln_node, kcomm_server
         self.id=id
         self.name=name
         self.ln_node=ln_node
-        self.kcom_server=kcomm_server
+        self.kcomm_server=kcomm_server
+
+class Contract():
+    def __init__(self, id, contract_no, party, counterparty, contract_texts):
+        self.id=id
+        self.contract_no=contract_no
+        self.party=party
+        self.counterparty=counterparty
+        self.contract_texts=contract_texts
 
 class LnNode():
     def __init__(self, id, address, tls_path, macaroon_path, status="" ):
@@ -68,6 +76,14 @@ class KCommServer():
         self.id=id
         self.address=address
         self.tls_cert=tls_cert
+        self.status=status
+
+class Contract():
+    def __init__(self, id, contract_no, party, counterparty, description, status=""):
+        self.id=id
+        self.contract_no=contract_no
+        self.party=party
+        self.description=description
         self.status=status
 
 

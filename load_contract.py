@@ -1,5 +1,6 @@
 # containing the sub-classed SaleGoodsForm with form specific slots and other handling.
 
+from html.entities import entitydefs
 import sys, time
 from datetime import date
 from PyQt6.QtCore import Qt, QDate, QTimer
@@ -21,10 +22,11 @@ from db_methods import (
     select_ln_node,
     select_kcomm,
     get_column_names,
-    select_record_with_id
+    select_record_with_id,
+    select_record_with_column_value
 )
 
-from LNContract_classes import Party, LnNode, KCommServer
+from LNContract_classes import Entity, LnNode, KCommServer, Contract
 
 
 class LoadContractForm(QMainWindow, Ui_LoadContractForm):
@@ -63,7 +65,10 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
 
         while self.contracts.next():
             
-            self.contract_no_val=self.contracts.value(self.contracts_no_index)  # contract number value
+            self.contract_no_val=self.contracts.value(self.contracts_no_index)  # contract number value that was selected in the form
+            print("type for contract_no_val")
+            print(type(self.contract_no_val))
+
             self.id_val=self.contracts.value(self.contracts_id_index)
             self.party_val=self.contracts.value(self.contracts_party_id_index)
             self.counterparty_val=self.contracts.value(self.contracts_counterparty_id_index)
@@ -72,11 +77,15 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
             self.load_contract_contractComboBox.addItem(self.contract_no_val)
 
             # assuming with this dict that the contract number is unique--as it is used as the key
-            self.contracts_dict[self.contract_no_val]=(
-                self.id_val,  # contract id value will be in 0 position of the dictionary tuple
-                self.party_val, # party value will be in 1 position of the dictionary tuple
-                self.counterparty_val # counterparty value will be in 2 position of the dictionary tuple
-            )
+            self.contracts_dict[self.contract_no_val]={
+                "id":self.id_val,  
+                "party":self.party_val, 
+                "counterparty":self.counterparty_val  
+            }
+            print("dict")
+            print(self.contracts_dict[self.contract_no_val]["id"])
+            print(self.contracts_dict[self.contract_no_val]["party"])
+            print(self.contracts_dict[self.contract_no_val]["counterparty"])
         self.contracts.finish()
 
         self.load_contract_buttonBox.accepted.connect(self.load_contract)
@@ -85,39 +94,81 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
 
     def load_contract(self):
         # get the data from the form
-        contract_num = self.load_contract_contractComboBox.currentText()
+        self.contract_num = self.load_contract_contractComboBox.currentText()
+        print("load contract type")
+        print(type(self.contract_num))
 
-        id=self.contracts_dict[contract_num][1]  
+        contract_model=self.set_up_contract_model()
+        print("Created the contract model")
+        print(contract_model.party.kcomm_server.address)
+
+        # #reset the form view
+        self.reset_load_contract_form()
+
+    def set_up_contract_model(self):
+        # create the party and counterparty objects/models
+        party=self.set_up_entity_model("party")
+        counterparty=self.set_up_entity_model("counterparty")
+
+        id=self.contracts_dict[self.contract_num]["id"]
+        contract_texts=self.get_ktexts(id)
+       
+        # create the contract model object
+        contract=Contract(id, self.contract_num, party, counterparty, contract_texts)
+        return contract
+
+    def get_ktexts(self, id):
+        # use the id_val to get the contract text to display
+        ktexts_query=select_record_with_column_value(self.con, "ktexts", "contract_id", id)
         
-        # use the party_id_val to select the party then get the party name to display
-        # the [1] is the below index for the dict corresponding to the chosen contract name
-        # [1] corresponds to the party_id.  see the dict under __init__ for LoadContractForm
+        print("contract text")
+        contract_texts=[]
+        while ktexts_query.next():
+            contract_texts.append(ktexts_query.value(1))
+        return contract_texts
 
-        #party_query=select_entity_with_id(self.con, self.contracts_dict[contract_num][1] )
-        # print("returned query")
-        # print(party_query.value(0))  # id value
-        # print(party_query.value(1))  # name value
-        # print(party_query.value(2))  # ln_node id value
-        # print(party_query.value(3))  # kcomm_server id value
+    def set_up_entity_model(self, entity_type):
+        # entity_type is party or counterparty
 
-        party_query=select_record_with_id(self.con, self.contracts_dict[contract_num][1], "entities")
-        
-        # print("ln_nodes")
-        # print(party_ln_node_query.value(0))
+        ##### create the party object:
+        entity_query=select_record_with_id(self.con, self.contracts_dict[self.contract_num][entity_type], "entities")
 
-
-        #### create the ln_node object:
+        #### create the party's ln_node object:
 
         # select the ln_node record
-        party_ln_node_id=party_query.value(2)
-        #party_ln_node_query=select_ln_node(self.con, party_ln_node_id)
-        party_ln_node_query=select_record_with_id(self.con, party_ln_node_id, "ln_nodes")
+        entity_ln_node_id=entity_query.value(2)  
+        # think about refactoring the "2 indices to be more robust"
+        # the 2 indices corresponds to the placement in the query which corresponds to the placement in the SELECT.
+        # The SELECT text is assembled from the get column names.  Does the order of column
+        # names it return ever change?
+        #  
+
+        # create the LnNode object:
+        ln_node=self.set_up_ln_node_model(entity_ln_node_id)
+
+        # create the kcomm_server object:
+        # select the kcomm record
+        entity_kcomm_id=entity_query.value(3)
         
-        ln_id= party_ln_node_query.value(0)
-        ln_address= party_ln_node_query.value(1)
-        ln_tls_path=party_ln_node_query.value(2)
-        ln_macaroon_path=party_ln_node_query.value(3)
-        ln_status=party_ln_node_query.value(4)
+        ### create the party's kcomm_server object:
+        kcomm_server=self.set_up_kcomm_model(entity_kcomm_id)
+        
+        # create the party object:
+        id=entity_query.value(0)
+        name=entity_query.value(1)
+        ln_node= ln_node
+        kcomm=kcomm_server
+        entity=Entity(id, name, ln_node, kcomm)  
+        return entity
+
+    def set_up_ln_node_model(self, entity_ln_node_id):
+        entity_ln_node_query=select_record_with_id(self.con, entity_ln_node_id, "ln_nodes")
+        
+        ln_id= entity_ln_node_query.value(0)
+        ln_address= entity_ln_node_query.value(1)
+        ln_tls_path=entity_ln_node_query.value(2)
+        ln_macaroon_path=entity_ln_node_query.value(3)
+        ln_status=entity_ln_node_query.value(4)
 
         # create the actual LnNode object:
         ln_node=LnNode(
@@ -127,17 +178,15 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
             ln_macaroon_path,
             ln_status
         )
+        return ln_node
 
-        ### create the kcomm_server object:
-
-        # select the kcomm record
-        party_kcomm_id=party_query.value(3)
-        party_kcomm_query=select_record_with_id(self.con, party_kcomm_id, "kcomm_servers")
+    def set_up_kcomm_model(self, entity_kcomm_id ):
+        entity_kcomm_query=select_record_with_id(self.con, entity_kcomm_id, "kcomm_servers")
         
-        k_id=party_kcomm_query.value(0)
-        k_address=party_kcomm_query.value(1)
-        k_tls_cert=party_kcomm_query.value(2)
-        k_status=party_kcomm_query.value(3)
+        k_id=entity_kcomm_query.value(0)
+        k_address=entity_kcomm_query.value(1)
+        k_tls_cert=entity_kcomm_query.value(2)
+        k_status=entity_kcomm_query.value(3)
 
         # create the actual KCommServer object
         kcomm_server=KCommServer(
@@ -146,47 +195,9 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
             k_tls_cert,
             k_status
         )
-
-        # create the party object:
-        p_id=party_query.value(0)
-        p_name=party_query.value(1)
-        p_ln_node= ln_node
-        p_kcomm=kcomm_server
-        party=Party(p_id, p_name, p_ln_node, p_kcomm)
-
-        print("Party:")
-        print(party.id)
-        print(party.name)
-        print(party.ln_node.id)
-        print(party.ln_node.address)
-        print(party.ln_node.tls_path)
-        print(party.ln_node.macaroon_path)
-        print(party.kcom_server.id)
-        print(party.kcom_server.address)
-        
-
-        #  use the counterparty_id_val to get the counterparty then get the counterparty name to display
-        counterparty_query=select_record_with_id(self.con, self.contracts_dict[contract_num][2], "entities" )
-        print("Counterparty query")
-        print(counterparty_query.value(1))
+        return kcomm_server
 
 
-        # print("returned query")
-        # print(counterparty_query.value(0))
-        # print(counterparty_query.value(1))
-        # print(counterparty_query.value(2))
-        # print(counterparty_query.value(3))
-        
-
-        #  use the id_val to get the contract text to display
-        contract_text_path=select_ktext(self.con, self.contracts_dict[contract_num][0])
-        # print("contract text")
-        # print(contract_text_path.value(0))
-
-
-        # #reset the form view
-        self.reset_load_contract_form()
-        
     def reject_load_contract(self):
         self.setVisible(False)
         
@@ -203,6 +214,6 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
         timer.timeout.connect(self.update_bottom_label)
         timer.start(500)
         
-    # update the bootom label of the load contract form.    
+    # update the bottom label of the load contract form.    
     def update_bottom_label(self):
         self.load_contract_bottom_label.setText("Done.  Enter another or quit.")
