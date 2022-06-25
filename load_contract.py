@@ -1,8 +1,10 @@
 # containing the sub-classed SaleGoodsForm with form specific slots and other handling.
 
+from contextlib import nullcontext
 from html.entities import entitydefs
 import sys, time
 from datetime import date
+from turtle import setheading
 from PyQt6.QtCore import Qt, QDate, QTimer
 from PyQt6.QtGui import QAction, QCursor
 from PyQt6 import QtWidgets, QtCore
@@ -40,67 +42,161 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
         self.parent=parent
         self.con=con
 
-        self.contracts=select_contracts(con) # query object for all contracts from contracts table
-        # create the index for various query values
         
-        self.contracts_no_index=self.contracts.record().indexOf("contract_no")  #contract_no is the contract number column in contracts table.
-        self.contracts_id_index=self.contracts.record().indexOf("id")
-        self.contracts_party_id_index=self.contracts.record().indexOf("party_id")
-        self.contracts_counterparty_id_index=self.contracts.record().indexOf("counterparty_id")
 
-        # contract query indices:
-        # id -> 0
-        # contract_no-> 1
-        # party_id -> 2
-        # counterparty_id -> 3
-        # description -> 4
-        # status -> 5
+    #####################################
+
+        # self.model = QSqlTableModel(self)
+        # self.model.setTable("contracts")
+        # self.model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit) #changes are cached until submitAll() or revertAll()
+        # #self.model.setHeaderData(0,Qt.Orientation.Horizontal, "id")
+        # #self.model.setHeaderData(1,Qt.Orientation.Horizontal, "contract_no")
+        # self.model.select() # populates the model
         
-        
-        self.contracts_dict={}
+        # row=self.model.record(0)
+        # for j in range(row.count()):
+        #     column_names.append(row.fieldName(j))
+        # print("model column and values")
 
-        # go through each contracts query record
-        # prepare the dict for that record with contract name as the key
-        # put name into the combo box widget
+        table="contracts"
+        self.contract_model, column_names =self.get_model(table)
+        # self.contract_model.setFilter("id=4")
+        # self.contract_model.select()
+        # row=self.contract_model.record(0)
+        # print("filtered row")
+        # print(row.value("contract_no"))
+        # print(self.contract_model.filter())
 
-        while self.contracts.next():
-            
-            self.contract_no_val=self.contracts.value(self.contracts_no_index)  # contract number value that was selected in the form
-            print("type for contract_no_val")
-            print(type(self.contract_no_val))
 
-            self.id_val=self.contracts.value(self.contracts_id_index)
-            self.party_val=self.contracts.value(self.contracts_party_id_index)
-            self.counterparty_val=self.contracts.value(self.contracts_counterparty_id_index)
-
+        # print("printing the contract numbers:")
+        for i in range(self.contract_model.rowCount()):
+            row=self.contract_model.record(i)
+            print(row.value("contract_no"))
+            phrase=row.value("contract_no")+": "+row.value("description")
             # load each contract into the combo box widget
-            self.load_contract_contractComboBox.addItem(self.contract_no_val)
+            self.load_contract_contractComboBox.addItem(phrase)
+        
 
-            # assuming with this dict that the contract number is unique--as it is used as the key
-            self.contracts_dict[self.contract_no_val]={
-                "id":self.id_val,  
-                "party":self.party_val, 
-                "counterparty":self.counterparty_val  
-            }
-            print("dict")
-            print(self.contracts_dict[self.contract_no_val]["id"])
-            print(self.contracts_dict[self.contract_no_val]["party"])
-            print(self.contracts_dict[self.contract_no_val]["counterparty"])
-        self.contracts.finish()
+        # contract_object=ContractObject(row)
+        # print("contract object")
+        # print(contract_object.contract_no)
+        
 
+
+
+    #####################################
+
+
+    #00000000000000000000000000000000000000
+        # self.contracts=select_contracts(con) # query object for all contracts from contracts table
+        # # create the index for various query values
+        
+        # self.contracts_no_index=self.contracts.record().indexOf("contract_no")  #contract_no is the contract number column in contracts table.
+        # self.contracts_id_index=self.contracts.record().indexOf("id")
+        # self.contracts_party_id_index=self.contracts.record().indexOf("party_id")
+        # self.contracts_counterparty_id_index=self.contracts.record().indexOf("counterparty_id")
+
+        # # contract query indices:
+        # # id -> 0
+        # # contract_no-> 1
+        # # party_id -> 2
+        # # counterparty_id -> 3
+        # # description -> 4
+        # # status -> 5
+        
+        
+        # self.contracts_dict={}
+
+        # # go through each contracts query record
+        # # prepare the dict for that record with contract name as the key
+        # # put name into the combo box widget
+
+        # while self.contracts.next():
+            
+        #     self.contract_no_val=self.contracts.value(self.contracts_no_index)  # contract number value that was selected in the form
+        #     print("type for contract_no_val")
+        #     print(type(self.contract_no_val))
+
+        #     self.id_val=self.contracts.value(self.contracts_id_index)
+        #     self.party_val=self.contracts.value(self.contracts_party_id_index)
+        #     self.counterparty_val=self.contracts.value(self.contracts_counterparty_id_index)
+
+        #     # load each contract into the combo box widget
+        #     self.load_contract_contractComboBox.addItem(self.contract_no_val)
+
+        #     # assuming with this dict that the contract number is unique--as it is used as the key
+        #     self.contracts_dict[self.contract_no_val]={
+        #         "id":self.id_val,  
+        #         "party":self.party_val, 
+        #         "counterparty":self.counterparty_val  
+        #     }
+        #     print("dict")
+        #     print(self.contracts_dict[self.contract_no_val]["id"])
+        #     print(self.contracts_dict[self.contract_no_val]["party"])
+        #     print(self.contracts_dict[self.contract_no_val]["counterparty"])
+        # self.contracts.finish()
+    #00000000000000000000000000000000000000
         self.load_contract_buttonBox.accepted.connect(self.load_contract)
         self.load_contract_buttonBox.rejected.connect(self.reject_load_contract)
         self.setVisible(False)
 
+    def get_column_names(self, model):
+        column_names=[]
+        row=model.record(0)  #assume the table is non empty
+        if row:
+            for j in range(row.count()):
+                column_names.append(row.fieldName(j))
+            return column_names
+        else:
+            print("error in getting columns")
+            return None
+
+
+    def get_model(self, table):
+        model = QSqlTableModel()
+        model.setTable(table)
+        model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit) #changes are cached until submitAll() or revertAll()
+        #self.model.setHeaderData(0,Qt.Orientation.Horizontal, "id")
+        #self.model.setHeaderData(1,Qt.Orientation.Horizontal, "contract_no")
+        model.select() # populates the model
+        col_names=self.get_column_names(model)
+        return model, col_names
+
+    class ContractObject():
+            print("in modelobject")
+            def __init__(self, row):
+                self.id=row.value("id")
+                self.contract_no=row.value("contract_no")
+                self.party=row.value("party_id")
+                self.counterparty=row.value("counterparty_id")
+                self.description=row.value("description")
+                
+
     def load_contract(self):
         # get the data from the form
-        self.contract_num = self.load_contract_contractComboBox.currentText()
-        print("load contract type")
-        print(type(self.contract_num))
+        self.chosen_contract = self.load_contract_contractComboBox.currentText()
+        
+        # get contracts record corresponding to the contract chosen
+        chosen_k_id = self.chosen_contract.split(": ")[0]
+        print("split:")
+        print(chosen_k_id)
+        where_phrase="contract_no = '"+chosen_k_id +"'"
+        self.contract_model.setFilter(where_phrase)
+        print(self.contract_model.filter())
+        print("selected?")
+        print(self.contract_model.select())
+        record=self.contract_model.record(0)
+        party_id=record.value("party_id")
+        counterparty_id=record.value("counterparty_id")
+
+        print("party/counterparty")
+        print(party_id)
+        print(counterparty_id)
+
+
 
         contract_model=self.set_up_contract_model()
-        print("Created the contract model")
-        print(contract_model.party.kcomm_server.address)
+        
 
         # #reset the form view
         self.reset_load_contract_form()
@@ -128,15 +224,22 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
         return contract_texts
 
     def set_up_entity_model(self, entity_type):
+
         # entity_type is party or counterparty
 
         ##### create the party object:
-        entity_query=select_record_with_id(self.con, self.contracts_dict[self.contract_num][entity_type], "entities")
+        #entity_query=select_record_with_id(self.con, self.contracts_dict[self.contract_num][entity_type], "entities")
+        entity_model, columns =self.get_model("entities")
+        entity_model.setFilter("")
 
         #### create the party's ln_node object:
 
         # select the ln_node record
-        entity_ln_node_id=entity_query.value(2)  
+        #entity_ln_node_id=entity_query.value(2)  
+        entity_ln_node_id=entity_model.record(0).value("ln_node_id")
+
+        print("within entity setutp")
+        print(entity_ln_node_id)
         # think about refactoring the "2 indices to be more robust"
         # the 2 indices corresponds to the placement in the query which corresponds to the placement in the SELECT.
         # The SELECT text is assembled from the get column names.  Does the order of column
