@@ -56,12 +56,14 @@ class Entity():
         self.kcomm_server=kcomm_server
 
 class Contract():
-    def __init__(self, id, contract_no, party, counterparty, contract_texts):
+    def __init__(self, id, contract_no, party, counterparty, contract_texts, description, status):
         self.id=id
         self.contract_no=contract_no
         self.party=party
         self.counterparty=counterparty
         self.contract_texts=contract_texts
+        self.description=description
+        self.status=status
 
 class LnNode():
     def __init__(self, id, address, tls_path, macaroon_path, status="" ):
@@ -78,14 +80,21 @@ class KCommServer():
         self.tls_cert=tls_cert
         self.status=status
 
-class Contract():
-    def __init__(self, id, contract_no, party, counterparty, description, status=""):
-        self.id=id
-        self.contract_no=contract_no
-        self.party=party
-        self.description=description
-        self.status=status
+# class Contract():
+#     def __init__(self, id, contract_no, party, counterparty, description, status=""):
+#         self.id=id
+#         self.contract_no=contract_no
+#         self.party=party
+#         self.description=description
+#         self.status=status
+#         self.contract_texts
 
+class KText():
+    def __init__(self, id, filename, contract_id, status):
+        self.id=id
+        self.filename=filename
+        self.contract_id=contract_id
+        self.status=status
 
 
 # if __name__ == "__main__":

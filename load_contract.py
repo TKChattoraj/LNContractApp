@@ -28,7 +28,7 @@ from db_methods import (
     select_record_with_column_value
 )
 
-from LNContract_classes import Entity, LnNode, KCommServer, Contract
+from LNContract_classes import Entity, LnNode, KCommServer, Contract, KText
 
 
 class LoadContractForm(QMainWindow, Ui_LoadContractForm):
@@ -156,8 +156,6 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
         model = QSqlTableModel()
         model.setTable(table)
         model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit) #changes are cached until submitAll() or revertAll()
-        #self.model.setHeaderData(0,Qt.Orientation.Horizontal, "id")
-        #self.model.setHeaderData(1,Qt.Orientation.Horizontal, "contract_no")
         model.select() # populates the model
         col_names=self.get_column_names(model)
         return model, col_names
@@ -176,67 +174,96 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
         # get the data from the form
         self.chosen_contract = self.load_contract_contractComboBox.currentText()
         
-        # get contracts record corresponding to the contract chosen
-        chosen_k_id = self.chosen_contract.split(": ")[0]
-        print("split:")
-        print(chosen_k_id)
-        where_phrase="contract_no = '"+chosen_k_id +"'"
-        self.contract_model.setFilter(where_phrase)
-        print(self.contract_model.filter())
-        print("selected?")
-        print(self.contract_model.select())
-        record=self.contract_model.record(0)
-        party_id=record.value("party_id")
-        counterparty_id=record.value("counterparty_id")
-
-        print("party/counterparty")
-        print(party_id)
-        print(counterparty_id)
-
-
-
-        contract_model=self.set_up_contract_model()
+        ### get contracts record corresponding to the contract chosen
+        # isolate the chosen contract number
+        chosen_k_no = self.chosen_contract.split(": ")[0]
         
+        # make the WHERE phrase, use the model to get the appropriate record
+        where_phrase="contract_no = '"+chosen_k_no +"'"
+        self.contract_model.setFilter(where_phrase)
+        self.contract_model.select()
+        contract_record=self.contract_model.record(0)
+
+        # get the party and counterparty ids from the selected record
+        party_id=contract_record.value("party_id")
+        counterparty_id=contract_record.value("counterparty_id")
+        description=contract_record.value("description")
+        status=contract_record.value("status")
+
+        contract_obj=self.set_up_contract_model(
+            chosen_k_no,
+            contract_record,
+            party_id,
+            counterparty_id,
+            description,
+            status
+            )
+        
+        print("The Contract")       
+        print(contract_obj.party.name)
+        print(contract_obj.contract_texts[0].filename)
+        print(contract_obj.counterparty.name)
 
         # #reset the form view
         self.reset_load_contract_form()
 
-    def set_up_contract_model(self):
+    def set_up_contract_model(self, chosen_k_no, contract_record, party_id, counterparty_id, description, status):
         # create the party and counterparty objects/models
-        party=self.set_up_entity_model("party")
-        counterparty=self.set_up_entity_model("counterparty")
+        party=self.set_up_entity_model(party_id)
+        counterparty=self.set_up_entity_model(counterparty_id)
 
-        id=self.contracts_dict[self.contract_num]["id"]
-        contract_texts=self.get_ktexts(id)
+        contract_id=contract_record.value("id")
+        contract_texts=self.get_ktexts(contract_id)
+        print("contract texts:")
+        print(contract_texts)
        
         # create the contract model object
-        contract=Contract(id, self.contract_num, party, counterparty, contract_texts)
+        contract=Contract(contract_id, chosen_k_no, party, counterparty, contract_texts, description, status)
         return contract
 
-    def get_ktexts(self, id):
+    def get_ktexts(self, k_id):
         # use the id_val to get the contract text to display
-        ktexts_query=select_record_with_column_value(self.con, "ktexts", "contract_id", id)
-        
-        print("contract text")
-        contract_texts=[]
-        while ktexts_query.next():
-            contract_texts.append(ktexts_query.value(1))
-        return contract_texts
+        k_text_model, col = self.get_model("ktexts")
+        where_clause="contract_id={}".format(k_id)
+        k_text_model.setFilter(where_clause)
+        k_text_model.select()
+        rows=k_text_model.rowCount()
+        k_text_list=[]
+        for i in range(rows):
+            record=k_text_model.record(i)
+            id=record.value("id")
+            filename=record.value("filename")
+            contract_id=record.value("contract_id")
+            status=record.value("satus")
+            ktext=KText(id, filename, contract_id, status)
+            k_text_list.append(ktext)
+        return k_text_list
 
-    def set_up_entity_model(self, entity_type):
+        # ktexts_query=select_record_with_column_value(self.con, "ktexts", "contract_id", id)
+        
+        # print("contract text")
+        # contract_texts=[]
+        # while ktexts_query.next():
+        #     contract_texts.append(ktexts_query.value(1))
+        # return contract_texts
+
+    def set_up_entity_model(self, entity_id):
 
         # entity_type is party or counterparty
 
         ##### create the party object:
         #entity_query=select_record_with_id(self.con, self.contracts_dict[self.contract_num][entity_type], "entities")
         entity_model, columns =self.get_model("entities")
-        entity_model.setFilter("")
+        where_phrase="id={}".format(entity_id)
+        entity_model.setFilter(where_phrase)
+        entity_model.select()
+        entity_record=entity_model.record(0)
 
         #### create the party's ln_node object:
 
         # select the ln_node record
         #entity_ln_node_id=entity_query.value(2)  
-        entity_ln_node_id=entity_model.record(0).value("ln_node_id")
+        entity_ln_node_id=entity_record.value("ln_node_id")
 
         print("within entity setutp")
         print(entity_ln_node_id)
@@ -251,27 +278,34 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
 
         # create the kcomm_server object:
         # select the kcomm record
-        entity_kcomm_id=entity_query.value(3)
+        entity_kcomm_id=entity_record.value("kcomm_server_id")
         
         ### create the party's kcomm_server object:
         kcomm_server=self.set_up_kcomm_model(entity_kcomm_id)
         
         # create the party object:
-        id=entity_query.value(0)
-        name=entity_query.value(1)
+        id=entity_record.value("id")
+        name=entity_record.value("name")
         ln_node= ln_node
         kcomm=kcomm_server
         entity=Entity(id, name, ln_node, kcomm)  
         return entity
 
     def set_up_ln_node_model(self, entity_ln_node_id):
-        entity_ln_node_query=select_record_with_id(self.con, entity_ln_node_id, "ln_nodes")
+        ln_node_model, columns =self.get_model("ln_nodes")
+        where_phrase="id={}".format(entity_ln_node_id)
+        ln_node_model.setFilter(where_phrase)
+        ln_node_model.select()
+        ln_node_record=ln_node_model.record(0)
+
+        ############
+        #entity_ln_node_query=select_record_with_id(self.con, entity_ln_node_id, "ln_nodes")
         
-        ln_id= entity_ln_node_query.value(0)
-        ln_address= entity_ln_node_query.value(1)
-        ln_tls_path=entity_ln_node_query.value(2)
-        ln_macaroon_path=entity_ln_node_query.value(3)
-        ln_status=entity_ln_node_query.value(4)
+        ln_id= ln_node_record.value("id")
+        ln_address= ln_node_record.value("address")
+        ln_tls_path=ln_node_record.value("tls_path")
+        ln_macaroon_path=ln_node_record.value("macaroon_path")
+        ln_status=ln_node_record.value("status")
 
         # create the actual LnNode object:
         ln_node=LnNode(
@@ -283,13 +317,24 @@ class LoadContractForm(QMainWindow, Ui_LoadContractForm):
         )
         return ln_node
 
-    def set_up_kcomm_model(self, entity_kcomm_id ):
-        entity_kcomm_query=select_record_with_id(self.con, entity_kcomm_id, "kcomm_servers")
+    def set_up_kcomm_model(self, kcomm_id ):
+        #  Need to think about abstracting the creation of these models into objects.
+        #  Also need to think about how to make less fragile in case of a database change.
+        #  That would require obtaining the values based on the specific column names for the table
+        #  And so need to think about the use of the "columns" variable in the get_model() function.
+
+        # entity_kcomm_query=select_record_with_id(self.con, entity_kcomm_id, "kcomm_servers")
         
-        k_id=entity_kcomm_query.value(0)
-        k_address=entity_kcomm_query.value(1)
-        k_tls_cert=entity_kcomm_query.value(2)
-        k_status=entity_kcomm_query.value(3)
+        kcomm_model, col = self.get_model("kcomm_servers")
+        where_phrase="id={}".format(kcomm_id)
+        kcomm_model.setFilter(where_phrase)
+        kcomm_model.select()
+        kcomm_record=kcomm_model.record(0)
+        
+        k_id=kcomm_record.value("id")
+        k_address=kcomm_record.value("address")
+        k_tls_cert=kcomm_record.value("tls_cert")
+        k_status=kcomm_record.value("status")
 
         # create the actual KCommServer object
         kcomm_server=KCommServer(
