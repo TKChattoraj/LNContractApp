@@ -11,7 +11,65 @@ import codecs
 
 import kcomm_server as kcomm
 
-# Nd to attriubte bulk of this code to LND site?  
+# Nd to attriubte bulk of this code to LND site?   
+
+# class LNConnection():
+#     def __init__(self, tls_path, macaroon_path, ln_url_port_str):
+
+#         # Due to updated ECDSA generated tls.cert we need to let gprc know that
+#         # we need to use that cipher suite otherwise there will be a handhsake
+#         # error when we communicate with the lnd rpc server.
+#         os.environ["GRPC_SSL_CIPHER_SUITES"] = 'HIGH+ECDSA'
+
+#         # build the TLS credentials:# Normally Lnd cert is at ~/.lnd/tls.cert on Linux and
+#         # ~/Library/Application Support/Lnd/tls.cert on Mac.
+#         # That is if there is a local LN node.  
+#         # Here we are using Polar and so the TLS cert is located at
+#         # /home/tarun/.polar/networks/1/volumes/lnd/alice/tls.cert'
+#         self.tls_cert=open(os.path.expanduser(tls_path))
+#         self.cert_creds=grpc.ssl_channel_creditials(self.tls_cert)
+
+#         # Build the meta data for the macaroon credentials:
+#         # Normally Lnd admin macaroon is at ~/.lnd/data/chain/bitcoin/simnet/admin.macaroon on Linux and
+#         # ~/Library/Application Support/Lnd/data/chain/bitcoin/simnet/admin.macaroon on Mac.  
+#         # That is if there is a local LN node.
+#         # Here we are using Polar and so the macaroon will be located at: 
+#         # /home/tarun/.polar/networks/1/volumes/lnd/alice/data/chain/bitcoin/regtest/admin.macaroon
+
+#         with open(os.path.expanduser(macaroon_path), 'rb') as f:
+#             macaroon_bytes = f.read()
+#             self.macaroon = codecs.encode(macaroon_bytes, 'hex')
+
+#         auth_creds = grpc.metadata_call_credentials(self.metadata_callback)
+
+#         # Combine the macaroon auth credentials.
+#         # Every call will be encrypted and authenticated.
+
+#         combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
+
+
+#         channel = grpc.secure_channel(ln_url_port_str, combined_creds, options=(('grpc.enable_http_proxy', 0),('grpc.enable_https_proxy', 0)))
+        
+#         # stub gives the location and port the ln node controlled by the party (Alice) is listening to
+#         # and gives the authorization credentials--the macaroon.
+#         # It is the basis of every communication to the LN node.  
+#         stub = lnrpc.LightningStub(channel)
+
+#         get_node_info(stub)
+
+#     # Metadata callback
+#     def metadata_callback(self, context, callback):
+#         # for more info see grpc docs
+#         callback([('macaroon', self.macaroon)], None)
+
+#     # Get Info of node.
+#     def get_node_info(stub):     
+#         request = ln.GetInfoRequest()
+#         response = stub.GetInfo(request)
+#         print(response)
+
+
+##########################################################################
 
 
 # Due to updated ECDSA generated tls.cert we need to let gprc know that
@@ -51,23 +109,23 @@ def metadata_callback(context, callback):
 auth_creds = grpc.metadata_call_credentials(metadata_callback)
 
 
-# Combine the certa dn macaroon auth credentials.
+# Combine the macaroon auth credentials.
 # Every call will be encrypted and authenticated.
 
 combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
 
 
-#127.0.0.1:10004.
-channel = grpc.secure_channel('localhost:10004', combined_creds, options=(('grpc.enable_http_proxy', 0),('grpc.enable_https_proxy', 0)))
+#127.0.0.1:10001.
+channel = grpc.secure_channel('localhost:10001', combined_creds, options=(('grpc.enable_http_proxy', 0),('grpc.enable_https_proxy', 0)))
 # stub gives the location and port the ln node controlled by the party (Alice) is listening to
 # and gives the authorization credentials--the macaroon.
 # It is the basis of every communication to the LN node.  
 stub = lnrpc.LightningStub(channel)
 
 
-# Retrieve and display the wallet balance.
-response = stub.WalletBalance(ln.WalletBalanceRequest())
-print(response.total_balance)
+# # Retrieve and display the wallet balance.
+# response = stub.WalletBalance(ln.WalletBalanceRequest())
+# print(response.total_balance)
 
 
 # # Get Info of node.
@@ -153,13 +211,13 @@ print(response)
 
 # Alice's Channels
 # List Channels Request
-request=ln.ListChannelsRequest()
-response=stub.ListChannels(request)
-print("Channels")
-channel_point = response.channels[0].channel_point
-print(channel_point)
-print("channel point type:")
-print(type(channel_point))
+# request=ln.ListChannelsRequest()
+# response=stub.ListChannels(request)
+# print("Channels")
+# channel_point = response.channels[0].channel_point
+# print(channel_point)
+# print("channel point type:")
+# print(type(channel_point))
 
 
 # # # Close channel with Bob

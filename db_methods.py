@@ -20,6 +20,25 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QAction, QCursor
 
+def get_column_names(model):
+    column_names=[]
+    row=model.record(0)  #assume the table is non empty
+    if row:
+        for j in range(row.count()):
+            column_names.append(row.fieldName(j))
+        return column_names
+    else:
+        print("error in getting columns")
+        return None
+
+def get_model(table):
+    model = QSqlTableModel()
+    model.setTable(table)
+    model.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit) #changes are cached until submitAll() or revertAll()
+    model.select() # populates the model
+    #col_names=get_column_names(model)
+    return model
+
 
 def select_sig(con):
     query=QSqlQuery(con)
