@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import kcomm_pb2 as kcomm__pb2
+import KComm_pb2 as KComm__pb2
 
 
 class KCommStub(object):
@@ -17,8 +17,8 @@ class KCommStub(object):
         """
         self.Transfer_Macaroon = channel.unary_unary(
                 '/KComm/Transfer_Macaroon',
-                request_serializer=kcomm__pb2.Inbound_Mac.SerializeToString,
-                response_deserializer=kcomm__pb2.Mac_Response.FromString,
+                request_serializer=KComm__pb2.Inbound_Mac.SerializeToString,
+                response_deserializer=KComm__pb2.Mac_Response.FromString,
                 )
 
 
@@ -38,8 +38,8 @@ def add_KCommServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Transfer_Macaroon': grpc.unary_unary_rpc_method_handler(
                     servicer.Transfer_Macaroon,
-                    request_deserializer=kcomm__pb2.Inbound_Mac.FromString,
-                    response_serializer=kcomm__pb2.Mac_Response.SerializeToString,
+                    request_deserializer=KComm__pb2.Inbound_Mac.FromString,
+                    response_serializer=KComm__pb2.Mac_Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -64,7 +64,7 @@ class KComm(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/KComm/Transfer_Macaroon',
-            kcomm__pb2.Inbound_Mac.SerializeToString,
-            kcomm__pb2.Mac_Response.FromString,
+            KComm__pb2.Inbound_Mac.SerializeToString,
+            KComm__pb2.Mac_Response.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

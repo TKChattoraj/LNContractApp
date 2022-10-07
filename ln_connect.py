@@ -115,8 +115,9 @@ class LNConnection():
 # # /home/tarun/.polar/networks/1/volumes/lnd/alice/tls.cert'
 
 # cert = open(os.path.expanduser('/home/tarun/.polar/networks/1/volumes/lnd/alice/tls.cert'), 'rb').read()
+cert = open(os.path.expanduser('/home/tarun/.lnd/tls.cert'), 'rb').read()
 
-# cert_creds = grpc.ssl_channel_credentials(cert)
+cert_creds = grpc.ssl_channel_credentials(cert)
 
 # # Build the meta data for the macaroon credentials:
 # # Normally Lnd admin macaroon is at ~/.lnd/data/chain/bitcoin/simnet/admin.macaroon on Linux and
@@ -124,42 +125,45 @@ class LNConnection():
 # # That is if there is a local LN node.
 # # Here we are using Polar and so the macaroon will be located at: 
 # # /home/tarun/.polar/networks/1/volumes/lnd/alice/data/chain/bitcoin/regtest/admin.macaroon
+admin_mac_path='/home/tarun/.lnd/data/chain/bitcoin/testnet/admin.macaroon'
 
-# with open(os.path.expanduser('/home/tarun/.polar/networks/1/volumes/lnd/alice/data/chain/bitcoin/regtest/admin.macaroon'), 'rb') as f:
-#     macaroon_bytes = f.read()
-#     macaroon = codecs.encode(macaroon_bytes, 'hex')
+with open(os.path.expanduser(admin_mac_path), 'rb') as f:
+    macaroon_bytes = f.read()
+    macaroon = codecs.encode(macaroon_bytes, 'hex')
 
 # # Metadata callback
-# def metadata_callback(context, callback):
-#     # for more info see grpc docs
-#     callback([('macaroon', macaroon)], None)
+def metadata_callback(context, callback):
+    # for more info see grpc docs
+    callback([('macaroon', macaroon)], None)
 
-# auth_creds = grpc.metadata_call_credentials(metadata_callback)
+auth_creds = grpc.metadata_call_credentials(metadata_callback)
 
 
 # # Combine the macaroon auth credentials.
 # # Every call will be encrypted and authenticated.
 
-# combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
+combined_creds = grpc.composite_channel_credentials(cert_creds, auth_creds)
+
 
 
 # #127.0.0.1:10004.
-# channel = grpc.secure_channel('localhost:10004', combined_creds, options=(('grpc.enable_http_proxy', 0),('grpc.enable_https_proxy', 0)))
+grpc_location='127.0.0.1:10010'
+channel = grpc.secure_channel(grpc_location, combined_creds, options=(('grpc.enable_http_proxy', 0),('grpc.enable_https_proxy', 0)))
 # # stub gives the location and port the ln node controlled by the party (Alice) is listening to
 # # and gives the authorization credentials--the macaroon.
 # # It is the basis of every communication to the LN node.  
-# stub = lnrpc.LightningStub(channel)
+stub = lnrpc.LightningStub(channel)
 
 
 # # Retrieve and display the wallet balance.
-# response = stub.WalletBalance(ln.WalletBalanceRequest())
-# print(response.total_balance)
+response = stub.WalletBalance(ln.WalletBalanceRequest())
+print(response.total_balance)
 
 
 # # # Get Info of node.
-# request = ln.GetInfoRequest()
-# response = stub.GetInfo(request)
-# print(response)
+request = ln.GetInfoRequest()
+response = stub.GetInfo(request)
+print(response)
 
 # ##################
 
@@ -271,4 +275,4 @@ class LNConnection():
 # # # response=stub.CloseChannel(request)
 
 
-# print("Finished.")
+print("Finished.")
